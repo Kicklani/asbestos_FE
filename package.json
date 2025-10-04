@@ -1,0 +1,49 @@
+{
+  "name": "asbestos_fe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kicklani/asbestos_FE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kicklani/asbestos_FE/issues"
+  },
+  "homepage": "https://github.com/Kicklani/asbestos_FE#readme",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "chart.js": "^4.5.0",
+    "d3": "^7.9.0",
+    "fabric": "^6.7.1",
+    "konva": "^10.0.2",
+    "react": "^19.2.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.2.0",
+    "react-konva": "^19.0.10",
+    "react-router-dom": "^7.9.3",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^5.0.4",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9"
+  }
+}
