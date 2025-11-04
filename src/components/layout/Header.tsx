@@ -6,35 +6,41 @@ export const Header: React.FC = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/analysis', label: 'Analysis' },
-    { path: '/about', label: 'About' },
+    { path: '/', label: '홈' },
+    { path: '/analysis', label: '분석하기' },
+    { path: '/about', label: '서비스 소개' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+    <header className="bg-white shadow-md border-b border-gray-100 sticky top-0 z-40 backdrop-blur-sm bg-opacity-95">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-              <span className="text-white font-bold text-xl">A</span>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-lg">
+              <span className="text-white font-bold text-2xl">🔬</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Asbestos Detector</span>
+            <div className="hidden sm:flex flex-col">
+              <span className="text-xl font-bold text-gray-900 tracking-tight">석면 검출기</span>
+              <span className="text-xs text-gray-500">AI 석면 분석 서비스</span>
+            </div>
+            <div className="sm:hidden flex flex-col">
+              <span className="text-lg font-bold text-gray-900">석면 검출기</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 ${
                   isActive(item.path)
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-200'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
                 }`}
               >
                 {item.label}
@@ -45,8 +51,8 @@ export const Header: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="Toggle menu"
+            className="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+            aria-label="메뉴 토글"
           >
             <svg
               className="w-6 h-6 text-gray-700"
@@ -65,16 +71,16 @@ export const Header: React.FC = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-gray-200">
+          <nav className="md:hidden py-4 border-t border-gray-200 animate-fadeIn">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`block px-4 py-3 rounded-xl font-semibold transition-all mb-2 ${
                   isActive(item.path)
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
                 }`}
               >
                 {item.label}

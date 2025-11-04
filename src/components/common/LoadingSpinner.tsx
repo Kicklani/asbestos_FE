@@ -8,7 +8,7 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
-  message = 'Loading...',
+  message = '로딩 중...',
   fullScreen = false,
 }) => {
   const sizeStyles = {
