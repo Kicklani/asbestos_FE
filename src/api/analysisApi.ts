@@ -1,54 +1,108 @@
-import { apiClient } from './client';
-import { AnalysisResponse, InspectionCentersResponse } from '@types/index';
+import client from './client';
+import {
+  ApiResponse,
+  AnalysisApiResponse,
+  InspectionCentersApiResponse,
+  AdditionalInfo,
+} from '@/types';
 
-export const analysisApi = {
-  // Step 1: Basic image analysis
-  analyzeImage: async (imageFile: File): Promise<AnalysisResponse> => {
-    const formData = new FormData();
-    formData.append('image', imageFile);
+/**
+ * Upload image for asbestos analysis
+ */
+export const analyzeImage = async (imageFile: File): Promise<AnalysisApiResponse> => {
+  const formData = new FormData();
+  formData.append('image', imageFile);
 
-    const response = await apiClient.post<AnalysisResponse>('/analyze/basic', formData, {
+  const response = await client.post<ApiResponse<AnalysisApiResponse>>(
+    '/analysis/upload',
+    formData,
+    {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
-    return response.data;
-  },
+    }
+  );
 
-  // Step 2: Detailed analysis with additional info
-  analyzeDetailed: async (
-    images: File[],
-    location?: string,
-    size?: string,
-    notes?: string
-  ): Promise<AnalysisResponse> => {
-    const formData = new FormData();
+  return response.data.data;
+};
 
-    images.forEach((image, index) => {
-      formData.append(`images`, image);
-    });
+/**
+ * Submit additional information for more detailed analysis
+ */
+export const submitAdditionalInfo = async (
+  analysisId: string,
+  additionalInfo: AdditionalInfo
+): Promise<AnalysisApiResponse> => {
+  const formData = new FormData();
 
-    if (location) formData.append('location', location);
-    if (size) formData.append('size', size);
-    if (notes) formData.append('notes', notes);
+  // Append text data
+  formData.append('analysisId', analysisId);
+  formData.append('location', additionalInfo.location);
+  formData.append('size', JSON.stringify(additionalInfo.size));
+  if (additionalInfo.notes) {
+    formData.append('notes', additionalInfo.notes);
+  }
 
-    const response = await apiClient.post<AnalysisResponse>('/analyze/detailed', formData, {
+  // Append additional images
+  additionalInfo.additionalImages.forEach((image) => {
+    formData.append(`additionalImages`, image.file);
+  });
+
+  const response = await client.post<ApiResponse<AnalysisApiResponse>>(
+    '/analysis/additional-info',
+    formData,
+    {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    });
-    return response.data;
-  },
+    }
+  );
 
-  // Step 3: Get inspection centers
-  getInspectionCenters: async (
-    latitude?: number,
-    longitude?: number
-  ): Promise<InspectionCentersResponse> => {
-    const params = latitude && longitude ? { latitude, longitude } : {};
-    const response = await apiClient.get<InspectionCentersResponse>('/inspection-centers', {
-      params,
-    });
-    return response.data;
-  },
+  return response.data.data;
+};
+
+/**
+ * Get nearby inspection centers based on location
+ */
+export const getInspectionCenters = async (
+  latitude?: number,
+  longitude?: number
+): Promise<InspectionCentersApiResponse> => {
+  const params: Record<string, any> = {};
+
+  if (latitude !== undefined && longitude !== undefined) {
+    params.lat = latitude;
+    params.lng = longitude;
+  }
+
+  const response = await client.get<ApiResponse<InspectionCentersApiResponse>>(
+    '/inspection-centers',
+    { params }
+  );
+
+  return response.data.data;
+};
+
+/**
+ * Get analysis history for current user
+ */
+export const getAnalysisHistory = async () => {
+  const response = await client.get('/analysis/history');
+  return response.data.data;
+};
+
+/**
+ * Get specific analysis result by ID
+ */
+export const getAnalysisById = async (analysisId: string) => {
+  const response = await client.get(`/analysis/${analysisId}`);
+  return response.data.data;
+};
+
+/**
+ * Delete analysis record
+ */
+export const deleteAnalysis = async (analysisId: string) => {
+  const response = await client.delete(`/analysis/${analysisId}`);
+  return response.data;
 };

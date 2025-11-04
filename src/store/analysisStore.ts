@@ -1,46 +1,30 @@
 import { create } from 'zustand';
-import { AnalysisState, ImageUpload, AnalysisResult, AdditionalInfo, InspectionCenter } from '@types/index';
+import { AnalysisStore } from '@/types';
 
-interface AnalysisActions {
-  setCurrentStep: (step: number) => void;
-  addImage: (image: ImageUpload) => void;
-  removeImage: (id: string) => void;
-  setAnalysisResult: (result: AnalysisResult | null) => void;
-  setAdditionalInfo: (info: Partial<AdditionalInfo>) => void;
-  setInspectionCenters: (centers: InspectionCenter[]) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  resetAnalysis: () => void;
-}
-
-const initialState: AnalysisState = {
+export const useAnalysisStore = create<AnalysisStore>((set) => ({
   currentStep: 1,
-  images: [],
+  uploadedImages: [],
   analysisResult: null,
-  additionalInfo: {},
+  additionalInfo: null,
   inspectionCenters: [],
   isLoading: false,
   error: null,
-};
 
-export const useAnalysisStore = create<AnalysisState & AnalysisActions>((set) => ({
-  ...initialState,
+  setStep: (step) => set({ currentStep: step }),
 
-  setCurrentStep: (step) => set({ currentStep: step }),
+  addImage: (image) =>
+    set((state) => ({
+      uploadedImages: [...state.uploadedImages, image],
+    })),
 
-  addImage: (image) => set((state) => ({
-    images: [...state.images, image]
-  })),
-
-  removeImage: (id) => set((state) => ({
-    images: state.images.filter((img) => img.id !== id)
-  })),
+  removeImage: (id) =>
+    set((state) => ({
+      uploadedImages: state.uploadedImages.filter((img) => img.id !== id),
+    })),
 
   setAnalysisResult: (result) => set({ analysisResult: result }),
 
-  setAdditionalInfo: (info) => set((state) => ({
-    additionalInfo: { ...state.additionalInfo, ...info }
-  })),
+  setAdditionalInfo: (info) => set({ additionalInfo: info }),
 
   setInspectionCenters: (centers) => set({ inspectionCenters: centers }),
 
@@ -48,5 +32,14 @@ export const useAnalysisStore = create<AnalysisState & AnalysisActions>((set) =>
 
   setError: (error) => set({ error }),
 
-  resetAnalysis: () => set(initialState),
+  reset: () =>
+    set({
+      currentStep: 1,
+      uploadedImages: [],
+      analysisResult: null,
+      additionalInfo: null,
+      inspectionCenters: [],
+      isLoading: false,
+      error: null,
+    }),
 }));
