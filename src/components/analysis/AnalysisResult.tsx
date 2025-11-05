@@ -1,6 +1,5 @@
 import React from "react";
 import { AnalysisResult as AnalysisResultType } from "@/types";
-import { Badge, Button } from "@/components/common";
 
 interface AnalysisResultProps {
   result: AnalysisResultType;
@@ -21,10 +20,10 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
           icon: "✅",
           title: "안전 - 석면 미검출",
           description: "AI 분석 결과, 이 재료는 안전한 것으로 보입니다.",
-          bgColor: "bg-green-50",
-          borderColor: "border-green-300",
-          textColor: "text-green-900",
-          iconBg: "bg-green-200",
+          bgColor: "#d1fae5",
+          borderColor: "#86efac",
+          textColor: "#065f46",
+          iconBg: "#a7f3d0",
         };
       case "uncertain":
         return {
@@ -32,10 +31,10 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
           icon: "⚠️",
           title: "불확실 - 추가 분석 권장",
           description: "정확한 검출을 위해 추가 정보가 필요합니다.",
-          bgColor: "bg-yellow-50",
-          borderColor: "border-yellow-300",
-          textColor: "text-yellow-900",
-          iconBg: "bg-yellow-200",
+          bgColor: "#fef3c7",
+          borderColor: "#fde047",
+          textColor: "#92400e",
+          iconBg: "#fde68a",
         };
       case "danger":
         return {
@@ -44,10 +43,10 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
           title: "잠재적 위험 감지",
           description:
             "재료에 석면이 포함되어 있을 수 있습니다. 전문가 검사가 필요합니다.",
-          bgColor: "bg-red-50",
-          borderColor: "border-red-300",
-          textColor: "text-red-900",
-          iconBg: "bg-red-200",
+          bgColor: "#fee2e2",
+          borderColor: "#fca5a5",
+          textColor: "#991b1b",
+          iconBg: "#fecaca",
         };
     }
   };
@@ -55,80 +54,135 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
   const config = getStatusConfig(result.status);
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-      <div className="p-8 md:p-10">
+    <div
+      style={{
+        background: "white",
+        borderRadius: "20px",
+        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ padding: "32px" }}>
         {/* Status Header */}
         <div
-          className={`${config.bgColor} ${config.borderColor} border-2 rounded-2xl p-8 mb-8`}
+          style={{
+            background: config.bgColor,
+            border: `2px solid ${config.borderColor}`,
+            borderRadius: "16px",
+            padding: "28px",
+            marginBottom: "24px",
+          }}
         >
-          <div className="flex items-start gap-6">
+          <div style={{ display: "flex", alignItems: "start", gap: "20px" }}>
             <div
-              className={`w-16 h-16 rounded-2xl ${config.iconBg} flex items-center justify-center flex-shrink-0 shadow-md`}
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "14px",
+                background: config.iconBg,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              }}
             >
-              <span className="text-3xl">{config.icon}</span>
+              <span style={{ fontSize: "28px" }}>{config.icon}</span>
             </div>
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-3 mb-3">
-                <h3 className={`text-2xl font-extrabold ${config.textColor}`}>
+            <div style={{ flex: 1 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  gap: "12px",
+                  marginBottom: "10px",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "22px",
+                    fontWeight: "900",
+                    color: config.textColor,
+                  }}
+                >
                   {config.title}
                 </h3>
-                <Badge variant={config.color as any} size="md">
+                <span
+                  style={{
+                    background: "white",
+                    color: config.textColor,
+                    padding: "6px 14px",
+                    borderRadius: "10px",
+                    fontSize: "13px",
+                    fontWeight: "700",
+                    border: `2px solid ${config.borderColor}`,
+                  }}
+                >
                   신뢰도 {result.confidence}%
-                </Badge>
+                </span>
               </div>
-              <p className={`${config.textColor} text-base leading-relaxed`}>
+              <p
+                style={{
+                  color: config.textColor,
+                  fontSize: "14px",
+                  lineHeight: "1.6",
+                }}
+              >
                 {config.description}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Analysis Message */}
-        <div className="mb-8 p-6 bg-gray-50 rounded-2xl border-2 border-gray-200">
-          <h4 className="font-bold text-gray-900 mb-3 text-lg">
-            📋 분석 메시지
-          </h4>
-          <p className="text-gray-700 leading-relaxed">{result.message}</p>
-        </div>
-
         {/* Detected Features */}
         {result.detectedFeatures && result.detectedFeatures.length > 0 && (
-          <div className="mb-8">
-            <h4 className="font-bold text-gray-900 mb-4 text-lg">
+          <div style={{ marginBottom: "24px" }}>
+            <h4
+              style={{
+                fontWeight: "700",
+                color: "#111827",
+                marginBottom: "14px",
+                fontSize: "15px",
+              }}
+            >
               🔍 감지된 특징
             </h4>
-            <ul className="space-y-3">
+            <ul
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+              }}
+            >
               {result.detectedFeatures.map((feature, index) => (
                 <li
                   key={index}
-                  className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border-2 border-blue-100"
+                  style={{
+                    display: "flex",
+                    alignItems: "start",
+                    gap: "12px",
+                    padding: "14px",
+                    background: "#eff6ff",
+                    borderRadius: "12px",
+                    border: "2px solid #dbeafe",
+                  }}
                 >
-                  <span className="text-blue-600 font-bold flex-shrink-0">
+                  <span
+                    style={{
+                      color: "#2563eb",
+                      fontWeight: "700",
+                      flexShrink: 0,
+                    }}
+                  >
                     ✓
                   </span>
-                  <span className="text-gray-700">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Recommendations */}
-        {result.recommendations && result.recommendations.length > 0 && (
-          <div className="mb-8">
-            <h4 className="font-bold text-gray-900 mb-4 text-lg">
-              💡 권장 사항
-            </h4>
-            <ul className="space-y-3">
-              {result.recommendations.map((rec, index) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-3 p-4 bg-indigo-50 rounded-xl border-2 border-indigo-100"
-                >
-                  <span className="text-indigo-600 font-bold flex-shrink-0">
-                    →
+                  <span style={{ color: "#1e40af", fontSize: "14px" }}>
+                    {feature}
                   </span>
-                  <span className="text-gray-700">{rec}</span>
                 </li>
               ))}
             </ul>
@@ -136,42 +190,98 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
         )}
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-10">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            marginTop: "32px",
+          }}
+        >
           {result.status === "uncertain" && onContinue && (
-            <Button
+            <button
               onClick={onContinue}
-              variant="primary"
-              size="lg"
-              className="flex-1 py-4 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{
+                flex: 1,
+                background: "#2563eb",
+                color: "white",
+                padding: "16px",
+                fontSize: "15px",
+                fontWeight: "700",
+                borderRadius: "12px",
+                border: "none",
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#1d4ed8")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "#2563eb")}
             >
               추가 정보 제공하기 →
-            </Button>
+            </button>
           )}
           {result.status === "danger" && onContinue && (
-            <Button
+            <button
               onClick={onContinue}
-              variant="danger"
-              size="lg"
-              className="flex-1 py-4 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{
+                flex: 1,
+                background: "#dc2626",
+                color: "white",
+                padding: "16px",
+                fontSize: "15px",
+                fontWeight: "700",
+                borderRadius: "12px",
+                border: "none",
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(220, 38, 38, 0.3)",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#b91c1c")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "#dc2626")}
             >
               검사소 찾기 →
-            </Button>
+            </button>
           )}
           {onReset && (
-            <Button
+            <button
               onClick={onReset}
-              variant="outline"
-              size="lg"
-              className="flex-1 py-4 text-lg font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all duration-300"
+              style={{
+                flex: 1,
+                background: "white",
+                border: "2px solid #2563eb",
+                color: "#2563eb",
+                padding: "16px",
+                fontSize: "15px",
+                fontWeight: "700",
+                borderRadius: "12px",
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#eff6ff")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "white")}
             >
               새로운 분석 시작
-            </Button>
+            </button>
           )}
         </div>
 
         {/* Timestamp */}
-        <div className="mt-8 pt-6 border-t-2 border-gray-100 text-center">
-          <p className="text-sm text-gray-500">
+        <div
+          style={{
+            marginTop: "24px",
+            paddingTop: "20px",
+            borderTop: "2px solid #f3f4f6",
+            textAlign: "center",
+          }}
+        >
+          <p style={{ fontSize: "13px", color: "#6b7280" }}>
             분석 시간: {new Date(result.timestamp).toLocaleString("ko-KR")}
           </p>
         </div>
