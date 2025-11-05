@@ -14,33 +14,33 @@ export const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-white shadow-md border-b border-gray-100 sticky top-0 z-40 backdrop-blur-sm bg-opacity-95">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+    <header className="bg-white shadow-lg border-b-4 border-blue-100 sticky top-0 z-40 backdrop-blur-sm bg-opacity-98">
+      <div className="w-full px-6 lg:px-16 xl:px-24">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between h-24">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-lg">
-              <span className="text-white font-bold text-2xl">🔬</span>
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-xl">
+              <span className="text-white font-bold text-3xl">🔬</span>
             </div>
             <div className="hidden sm:flex flex-col">
-              <span className="text-xl font-bold text-gray-900 tracking-tight">석면 검출기</span>
-              <span className="text-xs text-gray-500">AI 석면 분석 서비스</span>
+              <span className="text-2xl font-extrabold text-gray-900 tracking-tight">석면 검출기</span>
+              <span className="text-sm text-gray-500 font-medium">AI 석면 분석 서비스</span>
             </div>
             <div className="sm:hidden flex flex-col">
-              <span className="text-lg font-bold text-gray-900">석면 검출기</span>
+              <span className="text-xl font-bold text-gray-900">석면 검출기</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-3">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 ${
+                className={`px-8 py-3.5 rounded-xl font-bold text-lg transition-all duration-200 ${
                   isActive(item.path)
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-200'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-xl shadow-blue-200 scale-105'
+                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:scale-105'
                 }`}
               >
                 {item.label}

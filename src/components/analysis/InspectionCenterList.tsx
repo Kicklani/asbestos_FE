@@ -40,24 +40,24 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
 
   if (centers.length === 0) {
     return (
-      <Card className="text-center py-8">
+      <Card className="text-center py-12 bg-white rounded-3xl shadow-2xl border-2 border-blue-100">
         <div className="text-gray-500">
-          <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-20 h-20 mx-auto mb-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p className="text-lg font-medium">No inspection centers found</p>
-          <p className="text-sm mt-2">Try adjusting your location or contact support</p>
+          <p className="text-2xl font-bold">검사소를 찾을 수 없습니다</p>
+          <p className="text-base mt-3">위치를 조정하거나 고객 지원에 문의하세요</p>
         </div>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Nearby Inspection Centers</h2>
-        <p className="text-gray-600">
-          We found {centers.length} certified inspection center{centers.length !== 1 ? 's' : ''} near you
+    <div className="space-y-6">
+      <div className="mb-8">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">근처 검사소</h2>
+        <p className="text-xl text-gray-600">
+          근처에서 {centers.length}개의 인증된 검사소를 찾았습니다
         </p>
       </div>
 
@@ -66,62 +66,62 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
           key={center.id}
           hoverable
           onClick={() => setSelectedCenter(center)}
-          className="cursor-pointer"
+          className="cursor-pointer bg-white rounded-3xl shadow-xl border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 transform hover:-translate-y-2"
         >
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             {/* Center Info */}
             <div className="flex-1">
-              <div className="flex items-start justify-between mb-2">
+              <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3 mb-2">
                     {center.name}
                     {center.certified && (
-                      <Badge variant="success" size="sm">Certified</Badge>
+                      <Badge variant="success" size="sm">인증</Badge>
                     )}
                   </h3>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2">
                     {renderRating(center.rating)}
-                    <span className="text-sm text-gray-600">({center.rating}.0)</span>
+                    <span className="text-base font-semibold text-gray-600">({center.rating}.0)</span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-start gap-2">
-                  <svg className="w-4 h-4 mt-0.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="space-y-3 text-base text-gray-600">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 mt-0.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <span>{center.address}</span>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   <span>{center.phone}</span>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
-                  <span>{formatDistance(center.distance)} away</span>
+                  <span>{formatDistance(center.distance)} 거리</span>
                 </div>
               </div>
             </div>
 
             {/* Pricing & Time */}
-            <div className="md:text-right">
-              <div className="mb-2">
-                <p className="text-sm text-gray-600 mb-1">Estimated Cost</p>
-                <p className="text-lg font-bold text-gray-900">
+            <div className="md:text-right bg-blue-50 p-6 rounded-2xl border-2 border-blue-200">
+              <div className="mb-4">
+                <p className="text-sm font-bold text-gray-600 mb-2">예상 비용</p>
+                <p className="text-xl font-extrabold text-blue-600">
                   {formatCurrency(center.estimatedCost.min)} - {formatCurrency(center.estimatedCost.max)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Inspection Time</p>
-                <p className="text-sm font-medium text-gray-900">{center.inspectionTime}</p>
+                <p className="text-sm font-bold text-gray-600 mb-2">검사 시간</p>
+                <p className="text-base font-bold text-gray-900">{center.inspectionTime}</p>
               </div>
             </div>
           </div>
@@ -136,58 +136,59 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
           title={selectedCenter.name}
           size="lg"
           footer={
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setSelectedCenter(null)}>
-                Close
+            <div className="flex gap-4">
+              <Button variant="outline" onClick={() => setSelectedCenter(null)} className="px-6 py-3 text-base font-bold rounded-xl">
+                닫기
               </Button>
               <Button
                 variant="primary"
                 onClick={() => window.open(`tel:${selectedCenter.phone}`, '_self')}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-8 py-3 text-base font-bold rounded-xl shadow-xl"
                 icon={
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 }
               >
-                Call Now
+                지금 전화하기
               </Button>
             </div>
           }
         >
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
               {renderRating(selectedCenter.rating)}
-              <span className="text-gray-600">({selectedCenter.rating}.0 rating)</span>
+              <span className="text-base font-semibold text-gray-600">({selectedCenter.rating}.0 평점)</span>
               {selectedCenter.certified && (
-                <Badge variant="success" size="sm">Certified</Badge>
+                <Badge variant="success" size="sm">인증</Badge>
               )}
             </div>
 
-            <div className="space-y-3 text-sm">
+            <div className="space-y-4 text-base">
               <div>
-                <p className="font-medium text-gray-700">Address</p>
+                <p className="font-bold text-gray-700 mb-2">주소</p>
                 <p className="text-gray-600">{selectedCenter.address}</p>
               </div>
 
               <div>
-                <p className="font-medium text-gray-700">Phone</p>
+                <p className="font-bold text-gray-700 mb-2">전화번호</p>
                 <p className="text-gray-600">{selectedCenter.phone}</p>
               </div>
 
               <div>
-                <p className="font-medium text-gray-700">Distance</p>
+                <p className="font-bold text-gray-700 mb-2">거리</p>
                 <p className="text-gray-600">{formatDistance(selectedCenter.distance)}</p>
               </div>
 
               <div>
-                <p className="font-medium text-gray-700">Estimated Cost</p>
-                <p className="text-gray-600">
+                <p className="font-bold text-gray-700 mb-2">예상 비용</p>
+                <p className="text-gray-600 font-semibold">
                   {formatCurrency(selectedCenter.estimatedCost.min)} - {formatCurrency(selectedCenter.estimatedCost.max)}
                 </p>
               </div>
 
               <div>
-                <p className="font-medium text-gray-700">Inspection Time</p>
+                <p className="font-bold text-gray-700 mb-2">검사 시간</p>
                 <p className="text-gray-600">{selectedCenter.inspectionTime}</p>
               </div>
             </div>
@@ -195,7 +196,7 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
             {selectedCenter.coordinates && (
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full px-6 py-4 text-lg font-bold rounded-xl border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
                 onClick={() => {
                   const url = `https://www.google.com/maps/search/?api=1&query=${selectedCenter.coordinates!.lat},${selectedCenter.coordinates!.lng}`;
                   window.open(url, '_blank');
@@ -206,7 +207,7 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
                   </svg>
                 }
               >
-                View on Map
+                지도에서 보기 🗺️
               </Button>
             )}
           </div>

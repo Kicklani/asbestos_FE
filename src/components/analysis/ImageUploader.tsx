@@ -24,13 +24,13 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     for (const file of fileArray) {
       // Check file type
       if (!file.type.startsWith('image/')) {
-        setError('Only image files are allowed');
+        setError('이미지 파일만 허용됩니다');
         continue;
       }
 
       // Check file size (10MB max)
       if (file.size > 10 * 1024 * 1024) {
-        setError('File size must be less than 10MB');
+        setError('파일 크기는 10MB 이하여야 합니다');
         continue;
       }
 
@@ -38,7 +38,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
 
     if (validFiles.length > maxFiles) {
-      setError(`Maximum ${maxFiles} files allowed`);
+      setError(`최대 ${maxFiles}개의 파일만 허용됩니다`);
       return validFiles.slice(0, maxFiles);
     }
 
@@ -77,24 +77,24 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   return (
-    <Card className="transition-all duration-200">
+    <Card className="transition-all duration-200 bg-white rounded-3xl shadow-2xl border-2 border-blue-100">
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+        className={`border-3 border-dashed rounded-2xl p-10 md:p-12 text-center transition-all duration-300 ${
           isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 hover:border-gray-400'
+            ? 'border-blue-500 bg-blue-50 scale-105'
+            : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
         }`}
       >
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-6">
           {/* Upload Icon */}
-          <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
-            isDragging ? 'bg-blue-100' : 'bg-gray-100'
+          <div className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+            isDragging ? 'bg-gradient-to-br from-blue-500 to-indigo-600 scale-110' : 'bg-gradient-to-br from-gray-100 to-gray-200'
           }`}>
             <svg
-              className={`w-8 h-8 ${isDragging ? 'text-blue-600' : 'text-gray-600'}`}
+              className={`w-10 h-10 ${isDragging ? 'text-white' : 'text-gray-600'}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -110,10 +110,10 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
           {/* Instructions */}
           <div>
-            <p className="text-lg font-medium text-gray-900 mb-1">
-              {isDragging ? 'Drop your images here' : 'Drag & drop images here'}
+            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+              {isDragging ? '이미지를 여기에 놓으세요' : '이미지를 드래그 앤 드롭하세요'}
             </p>
-            <p className="text-sm text-gray-500">or click to browse</p>
+            <p className="text-base text-gray-500">또는 클릭하여 파일을 선택하세요</p>
           </div>
 
           {/* File Input */}
@@ -127,22 +127,22 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           />
           <label
             htmlFor="file-upload"
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 cursor-pointer transition-colors"
+            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-lg font-bold hover:from-blue-700 hover:to-indigo-700 cursor-pointer transition-all duration-300 shadow-xl hover:scale-105 transform"
           >
-            Select Files
+            파일 선택하기 📁
           </label>
 
           {/* Info */}
-          <p className="text-xs text-gray-500">
-            Maximum {maxFiles} files, up to 10MB each
+          <p className="text-sm text-gray-500 font-medium">
+            최대 {maxFiles}개 파일, 각 파일당 최대 10MB
           </p>
         </div>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-600">{error}</p>
+        <div className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl shadow-md">
+          <p className="text-base text-red-600 font-semibold">{error}</p>
         </div>
       )}
     </Card>

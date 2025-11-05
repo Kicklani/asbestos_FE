@@ -33,7 +33,7 @@ export const AnalysisPage: React.FC = () => {
   // Handle analysis submission
   const handleAnalyze = async () => {
     if (uploadedImages.length === 0) {
-      setError('Please upload at least one image');
+      setError('최소 한 개 이상의 이미지를 업로드해주세요');
       return;
     }
 
@@ -50,16 +50,16 @@ export const AnalysisPage: React.FC = () => {
         id: `analysis-${Date.now()}`,
         status: Math.random() > 0.7 ? 'safe' : Math.random() > 0.5 ? 'uncertain' : 'danger',
         confidence: Math.floor(Math.random() * 30) + 70,
-        message: 'Based on the visual analysis of the provided image, our AI model has completed the preliminary screening.',
+        message: '제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.',
         detectedFeatures: [
-          'Fibrous texture detected',
-          'Color patterns analyzed',
-          'Surface characteristics evaluated',
+          '섬유질 질감 감지됨',
+          '색상 패턴 분석 완료',
+          '표면 특성 평가 완료',
         ],
         recommendations: [
-          'Review the detailed analysis report',
-          'Consider professional inspection if concerned',
-          'Keep records of this screening',
+          '상세 분석 보고서를 검토하세요',
+          '우려되는 경우 전문 검사를 고려하세요',
+          '이 스크리닝 기록을 보관하세요',
         ],
         timestamp: new Date().toISOString(),
       };
@@ -67,7 +67,7 @@ export const AnalysisPage: React.FC = () => {
       setAnalysisResult(mockResult);
       setCurrentStep('result');
     } catch (err) {
-      setError('Analysis failed. Please try again.');
+      setError('분석에 실패했습니다. 다시 시도해주세요.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -98,7 +98,7 @@ export const AnalysisPage: React.FC = () => {
         ...analysisResult!,
         status: Math.random() > 0.5 ? 'safe' : 'danger',
         confidence: Math.floor(Math.random() * 20) + 80,
-        message: 'With the additional information provided, we have completed a more detailed analysis.',
+        message: '추가 정보를 바탕으로 보다 상세한 분석을 완료했습니다.',
         timestamp: new Date().toISOString(),
       };
 
@@ -110,7 +110,7 @@ export const AnalysisPage: React.FC = () => {
         setCurrentStep('result');
       }
     } catch (err) {
-      setError('Failed to process additional information. Please try again.');
+      setError('추가 정보 처리에 실패했습니다. 다시 시도해주세요.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -130,11 +130,11 @@ export const AnalysisPage: React.FC = () => {
       const mockCenters: InspectionCenter[] = [
         {
           id: '1',
-          name: 'Seoul Asbestos Testing Center',
-          address: '123 Gangnam-daero, Gangnam-gu, Seoul',
+          name: '서울 석면 검사 센터',
+          address: '서울특별시 강남구 강남대로 123',
           distance: 2.3,
           estimatedCost: { min: 150000, max: 300000 },
-          inspectionTime: '3-5 business days',
+          inspectionTime: '3-5 영업일',
           rating: 5,
           phone: '02-1234-5678',
           certified: true,
@@ -142,11 +142,11 @@ export const AnalysisPage: React.FC = () => {
         },
         {
           id: '2',
-          name: 'Korea Environmental Analysis Lab',
-          address: '456 Teheran-ro, Gangnam-gu, Seoul',
+          name: '한국 환경 분석 연구소',
+          address: '서울특별시 강남구 테헤란로 456',
           distance: 3.7,
           estimatedCost: { min: 120000, max: 250000 },
-          inspectionTime: '2-4 business days',
+          inspectionTime: '2-4 영업일',
           rating: 4,
           phone: '02-2345-6789',
           certified: true,
@@ -154,11 +154,11 @@ export const AnalysisPage: React.FC = () => {
         },
         {
           id: '3',
-          name: 'National Asbestos Inspection Service',
-          address: '789 Yangjae-daero, Seocho-gu, Seoul',
+          name: '국가 석면 검사 서비스',
+          address: '서울특별시 서초구 양재대로 789',
           distance: 5.2,
           estimatedCost: { min: 100000, max: 200000 },
-          inspectionTime: '5-7 business days',
+          inspectionTime: '5-7 영업일',
           rating: 5,
           phone: '02-3456-7890',
           certified: true,
@@ -169,7 +169,7 @@ export const AnalysisPage: React.FC = () => {
       setInspectionCenters(mockCenters);
       setCurrentStep('inspection-centers');
     } catch (err) {
-      setError('Failed to fetch inspection centers. Please try again.');
+      setError('검사소 정보를 불러오는데 실패했습니다. 다시 시도해주세요.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -191,9 +191,9 @@ export const AnalysisPage: React.FC = () => {
   // Render progress steps
   const renderProgressSteps = () => {
     const steps = [
-      { id: 'upload', label: 'Upload', number: 1 },
-      { id: 'result', label: 'Results', number: 2 },
-      { id: 'inspection-centers', label: 'Centers', number: 3 },
+      { id: 'upload', label: '업로드', number: 1 },
+      { id: 'result', label: '결과 확인', number: 2 },
+      { id: 'inspection-centers', label: '검사소', number: 3 },
     ];
 
     const getCurrentStepNumber = () => {
@@ -209,27 +209,27 @@ export const AnalysisPage: React.FC = () => {
     const currentNumber = getCurrentStepNumber();
 
     return (
-      <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center justify-center gap-4 mb-12">
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
+                className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shadow-lg transition-all duration-300 ${
                   step.number <= currentNumber
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white scale-110'
                     : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 {step.number}
               </div>
-              <span className={`text-xs mt-1 ${step.number <= currentNumber ? 'text-blue-600' : 'text-gray-500'}`}>
+              <span className={`text-sm mt-2 font-semibold ${step.number <= currentNumber ? 'text-blue-600' : 'text-gray-500'}`}>
                 {step.label}
               </span>
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-12 h-1 rounded transition-colors ${
-                  step.number < currentNumber ? 'bg-blue-600' : 'bg-gray-200'
+                className={`w-16 h-1.5 rounded-full transition-all duration-300 ${
+                  step.number < currentNumber ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-gray-200'
                 }`}
               />
             )}
@@ -240,16 +240,18 @@ export const AnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen py-8">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
+    <div className="bg-gradient-to-b from-blue-50 via-white to-gray-50 min-h-screen py-12 md:py-20">
+      <div className="w-full px-6 lg:px-16 xl:px-24">
+        <div className="max-w-[1400px] mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              Asbestos Analysis
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4">
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                석면 분석
+              </span>
             </h1>
-            <p className="text-gray-600">
-              Upload images for AI-powered preliminary screening
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              AI 기반 예비 스크리닝을 위해 이미지를 업로드하세요
             </p>
           </div>
 
@@ -258,15 +260,15 @@ export const AnalysisPage: React.FC = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600">{error}</p>
+            <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-2xl shadow-lg">
+              <p className="text-red-600 text-lg font-semibold">{error}</p>
             </div>
           )}
 
           {/* Loading */}
           {isLoading && (
-            <Card className="mb-6">
-              <LoadingSpinner size="lg" message="Analyzing your image..." />
+            <Card className="mb-8">
+              <LoadingSpinner size="lg" message="이미지를 분석하고 있습니다..." />
             </Card>
           )}
 
@@ -275,39 +277,39 @@ export const AnalysisPage: React.FC = () => {
             <>
               {/* Upload Step */}
               {currentStep === 'upload' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <ImageUploader onImagesSelected={handleImagesSelected} maxFiles={1} />
 
                   {/* Image Preview */}
                   {uploadedImages.length > 0 && (
-                    <Card title="Uploaded Image">
-                      <div className="grid grid-cols-1 gap-4">
+                    <Card title="업로드된 이미지">
+                      <div className="grid grid-cols-1 gap-6">
                         {uploadedImages.map((image) => (
                           <div key={image.id} className="relative">
                             <img
                               src={image.preview}
-                              alt="Uploaded"
-                              className="w-full h-64 object-contain bg-gray-100 rounded-lg"
+                              alt="업로드됨"
+                              className="w-full h-80 object-contain bg-gray-100 rounded-2xl shadow-lg"
                             />
                             <Button
                               variant="danger"
                               size="sm"
                               onClick={() => setUploadedImages([])}
-                              className="absolute top-2 right-2"
+                              className="absolute top-4 right-4 shadow-xl"
                             >
-                              Remove
+                              삭제
                             </Button>
                           </div>
                         ))}
                       </div>
-                      <div className="mt-6">
+                      <div className="mt-8">
                         <Button
                           onClick={handleAnalyze}
                           variant="primary"
                           size="lg"
-                          className="w-full"
+                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-2xl px-10 py-5 text-xl font-bold rounded-2xl transform hover:scale-105 transition-all"
                         >
-                          Analyze Image
+                          이미지 분석하기 🔬
                         </Button>
                       </div>
                     </Card>
@@ -336,9 +338,14 @@ export const AnalysisPage: React.FC = () => {
               {currentStep === 'inspection-centers' && (
                 <div>
                   <InspectionCenterList centers={inspectionCenters} />
-                  <div className="mt-6 text-center">
-                    <Button onClick={handleReset} variant="outline">
-                      Start New Analysis
+                  <div className="mt-10 text-center">
+                    <Button
+                      onClick={handleReset}
+                      variant="outline"
+                      size="lg"
+                      className="px-10 py-4 text-lg font-bold rounded-2xl border-3 border-blue-600 text-blue-600 hover:bg-blue-50 transform hover:scale-105 transition-all"
+                    >
+                      새로운 분석 시작하기
                     </Button>
                   </div>
                 </div>
