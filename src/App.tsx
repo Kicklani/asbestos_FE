@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Layout } from '@components/layout';
-import { HomePage, AnalysisPage, AboutPage } from '@pages/index';
+import { Layout } from '@/components/layout';
+import { HomePage, AnalysisPage, AboutPage } from '@/pages';
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Layout>
@@ -16,5 +16,3 @@ const App: React.FC = () => {
     </BrowserRouter>
   );
 };
-
-export default App;
