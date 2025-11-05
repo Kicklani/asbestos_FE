@@ -74,27 +74,48 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   return (
-    <div className="w-full">
+    <div style={{ width: "100%" }}>
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`border-2 border-dashed rounded-3xl p-20 text-center transition-all duration-200 bg-white ${
-          isDragging
-            ? "border-blue-500 bg-blue-50 scale-[1.02]"
-            : "border-gray-300 hover:border-blue-400"
-        }`}
+        style={{
+          border: "3px dashed",
+          borderColor: isDragging ? "#2563eb" : "#d1d5db",
+          borderRadius: "20px",
+          padding: "80px 60px",
+          textAlign: "center",
+          transition: "all 0.2s",
+          background: isDragging ? "#eff6ff" : "white",
+          cursor: "pointer",
+        }}
       >
-        <div className="flex flex-col items-center gap-6">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "24px",
+          }}
+        >
           <div
-            className={`w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-200 ${
-              isDragging ? "bg-blue-600" : "bg-gray-100"
-            }`}
+            style={{
+              width: "70px",
+              height: "70px",
+              borderRadius: "14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s",
+              background: isDragging ? "#2563eb" : "#f3f4f6",
+            }}
           >
             <svg
-              className={`w-10 h-10 ${
-                isDragging ? "text-white" : "text-gray-400"
-              }`}
+              style={{
+                width: "36px",
+                height: "36px",
+                color: isDragging ? "white" : "#9ca3af",
+              }}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -109,16 +130,39 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           </div>
 
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: "700",
+                color: "#111827",
+                marginBottom: "8px",
+              }}
+            >
               이미지를 드래그 앤 드롭하세요
             </h3>
-            <p className="text-base text-gray-500">
+            <p style={{ fontSize: "14px", color: "#6b7280" }}>
               또는 클릭하여 파일을 선택하세요
             </p>
           </div>
 
-          <label className="cursor-pointer">
-            <div className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold transition-all duration-200 hover:scale-105">
+          <label style={{ cursor: "pointer" }}>
+            <div
+              style={{
+                background: "#2563eb",
+                color: "white",
+                padding: "16px 48px",
+                borderRadius: "12px",
+                fontWeight: "700",
+                fontSize: "15px",
+                transition: "all 0.2s",
+                display: "inline-block",
+                boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "#1d4ed8")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.background = "#2563eb")}
+            >
               파일 선택하기
             </div>
             <input
@@ -126,19 +170,36 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               accept={accept}
               multiple={maxFiles > 1}
               onChange={handleFileInput}
-              className="hidden"
+              style={{ display: "none" }}
             />
           </label>
 
-          <p className="text-sm text-gray-400">
+          <p style={{ fontSize: "13px", color: "#9ca3af" }}>
             최대 1개 파일, 각 파일당 최대 10MB
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-          <p className="text-red-600 font-medium text-center">{error}</p>
+        <div
+          style={{
+            marginTop: "16px",
+            padding: "16px",
+            background: "#fef2f2",
+            border: "2px solid #fecaca",
+            borderRadius: "12px",
+          }}
+        >
+          <p
+            style={{
+              color: "#dc2626",
+              fontWeight: "600",
+              textAlign: "center",
+              fontSize: "14px",
+            }}
+          >
+            {error}
+          </p>
         </div>
       )}
     </div>
