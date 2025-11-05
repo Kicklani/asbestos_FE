@@ -1,92 +1,252 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 mt-auto">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* About Section */}
+    <footer
+      style={{
+        background: "white",
+        borderTop: "1px solid #e5e7eb",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "auto",
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: "1200px", padding: "40px 32px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "40px",
+            marginBottom: "32px",
+          }}
+        >
+          {/* 브랜드 섹션 */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">🔬</span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "12px",
+              }}
+            >
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  background: "#2563eb",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span style={{ fontSize: "16px" }}>🔬</span>
               </div>
-              <h3 className="text-white font-bold text-xl">석면 검출기</h3>
+              <span
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "900",
+                  color: "#111827",
+                }}
+              >
+                석면 검출기
+              </span>
             </div>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              AI 기반 석면 검출 예비 스크리닝 서비스.
-              빠르고 쉽게, 누구나 접근 가능합니다.
+            <p
+              style={{ fontSize: "13px", color: "#6b7280", lineHeight: "1.6" }}
+            >
+              AI 기반 석면 검출 예비 스크리닝 서비스. 빠르고 쉽게, 누구나 접근
+              가능합니다.
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* 바로가기 */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-4">바로가기</h3>
-            <ul className="space-y-3">
+            <h3
+              style={{
+                fontSize: "14px",
+                fontWeight: "700",
+                color: "#111827",
+                marginBottom: "12px",
+              }}
+            >
+              바로가기
+            </h3>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            >
               <li>
-                <Link to="/" className="text-sm hover:text-blue-400 transition-colors flex items-center gap-2 group">
-                  <span className="text-blue-500 group-hover:translate-x-1 transition-transform">→</span>
+                <Link
+                  to="/"
+                  style={{
+                    fontSize: "13px",
+                    color: "#6b7280",
+                    textDecoration: "none",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
+                >
                   홈
                 </Link>
               </li>
               <li>
-                <Link to="/analysis" className="text-sm hover:text-blue-400 transition-colors flex items-center gap-2 group">
-                  <span className="text-blue-500 group-hover:translate-x-1 transition-transform">→</span>
+                <Link
+                  to="/analysis"
+                  style={{
+                    fontSize: "13px",
+                    color: "#6b7280",
+                    textDecoration: "none",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
+                >
                   분석 시작하기
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-sm hover:text-blue-400 transition-colors flex items-center gap-2 group">
-                  <span className="text-blue-500 group-hover:translate-x-1 transition-transform">→</span>
+                <Link
+                  to="/about"
+                  style={{
+                    fontSize: "13px",
+                    color: "#6b7280",
+                    textDecoration: "none",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
+                >
                   서비스 소개
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact & Legal */}
+          {/* 법적 고지 */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-4">법적 고지</h3>
-            <ul className="space-y-3 text-sm text-gray-400">
-              <li className="hover:text-gray-300 cursor-pointer transition-colors">개인정보 처리방침</li>
-              <li className="hover:text-gray-300 cursor-pointer transition-colors">이용약관</li>
-              <li className="hover:text-gray-300 cursor-pointer transition-colors">고객 지원</li>
+            <h3
+              style={{
+                fontSize: "14px",
+                fontWeight: "700",
+                color: "#111827",
+                marginBottom: "12px",
+              }}
+            >
+              법적 고지
+            </h3>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            >
+              <li>
+                <a
+                  href="#"
+                  style={{
+                    fontSize: "13px",
+                    color: "#6b7280",
+                    textDecoration: "none",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
+                >
+                  개인정보 처리방침
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  style={{
+                    fontSize: "13px",
+                    color: "#6b7280",
+                    textDecoration: "none",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
+                >
+                  이용약관
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  style={{
+                    fontSize: "13px",
+                    color: "#6b7280",
+                    textDecoration: "none",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
+                >
+                  고객 지원
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <div className="mt-10 pt-8 border-t border-gray-700">
-          <div className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border-2 border-yellow-700/50 rounded-xl p-5 mb-6 backdrop-blur-sm">
-            <div className="flex gap-4">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-              <div className="text-sm">
-                <p className="text-yellow-200 font-bold mb-2 text-base">⚠️ 중요 안내사항</p>
-                <p className="text-yellow-100 leading-relaxed">
-                  본 애플리케이션은 예비 스크리닝 목적으로만 제공되며 전문가의 분석을 대체할 수 없습니다.
-                  석면 관련 최종 확인 및 안전 결정은 반드시 인증된 전문가와 상담하시기 바랍니다.
-                </p>
-              </div>
+        {/* 중요 안내사항 */}
+        <div
+          style={{
+            padding: "16px",
+            background: "#fef3c7",
+            border: "2px solid #fde047",
+            borderRadius: "12px",
+            marginBottom: "24px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "start", gap: "10px" }}>
+            <span style={{ fontSize: "16px", flexShrink: 0 }}>⚠️</span>
+            <div>
+              <h4
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  color: "#92400e",
+                  marginBottom: "4px",
+                }}
+              >
+                중요 안내사항
+              </h4>
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "#78350f",
+                  lineHeight: "1.5",
+                }}
+              >
+                본 애플리케이션은 예비 스크리닝 목적으로만 제공되며 전문가의
+                분석을 대체할 수 없습니다. 석면 관련 최종 확인 결정시 반드시
+                인증된 전문가와 상담하시기 바랍니다.
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-500 mb-2">
-              &copy; {currentYear} 석면 검출기. All rights reserved.
-            </p>
-            <p className="text-xs text-gray-600">
-              Made with ❤️ for safer environments
-            </p>
-          </div>
+        {/* 저작권 */}
+        <div
+          style={{
+            borderTop: "1px solid #e5e7eb",
+            paddingTop: "20px",
+            textAlign: "center",
+          }}
+        >
+          <p style={{ fontSize: "12px", color: "#9ca3af" }}>
+            © 2025 석면 검출기. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

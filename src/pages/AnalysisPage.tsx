@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   ImageUploader,
   AnalysisResult as AnalysisResultComponent,
   AdditionalInfoForm,
   InspectionCenterList,
-} from '@/components/analysis';
-import { Card, LoadingSpinner, Button } from '@/components/common';
-import { ImageUpload, AnalysisResult, AdditionalInfo, InspectionCenter } from '@/types';
+} from "@/components/analysis";
+import { LoadingSpinner, Button } from "@/components/common";
+import {
+  ImageUpload,
+  AnalysisResult,
+  AdditionalInfo,
+  InspectionCenter,
+} from "@/types";
 
-type Step = 'upload' | 'result' | 'additional-info' | 'inspection-centers';
+type Step = "upload" | "result" | "additional-info" | "inspection-centers";
 
 export const AnalysisPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<Step>('upload');
+  const [currentStep, setCurrentStep] = useState<Step>("upload");
   const [uploadedImages, setUploadedImages] = useState<ImageUpload[]>([]);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [inspectionCenters, setInspectionCenters] = useState<InspectionCenter[]>([]);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
+    null
+  );
+  const [inspectionCenters, setInspectionCenters] = useState<
+    InspectionCenter[]
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle image upload
   const handleImagesSelected = async (files: File[]) => {
     const newImages: ImageUpload[] = files.map((file) => ({
       id: `${Date.now()}-${Math.random()}`,
@@ -30,10 +38,9 @@ export const AnalysisPage: React.FC = () => {
     setUploadedImages(newImages);
   };
 
-  // Handle analysis submission
   const handleAnalyze = async () => {
     if (uploadedImages.length === 0) {
-      setError('최소 한 개 이상의 이미지를 업로드해주세요');
+      setError("최소 한 개 이상의 이미지를 업로드해주세요");
       return;
     }
 
@@ -41,196 +48,216 @@ export const AnalysisPage: React.FC = () => {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Mock result - replace with actual API response
       const mockResult: AnalysisResult = {
         id: `analysis-${Date.now()}`,
-        status: Math.random() > 0.7 ? 'safe' : Math.random() > 0.5 ? 'uncertain' : 'danger',
+        status:
+          Math.random() > 0.7
+            ? "safe"
+            : Math.random() > 0.5
+            ? "uncertain"
+            : "danger",
         confidence: Math.floor(Math.random() * 30) + 70,
-        message: '제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.',
+        message:
+          "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
         detectedFeatures: [
-          '섬유질 질감 감지됨',
-          '색상 패턴 분석 완료',
-          '표면 특성 평가 완료',
+          "섬유질 질감 감지됨",
+          "색상 패턴 분석 완료",
+          "표면 특성 평가 완료",
         ],
         recommendations: [
-          '상세 분석 보고서를 검토하세요',
-          '우려되는 경우 전문 검사를 고려하세요',
-          '이 스크리닝 기록을 보관하세요',
+          "상세 분석 보고서를 검토하세요",
+          "우려되는 경우 전문 검사를 고려하세요",
+          "이 스크리닝 기록을 보관하세요",
         ],
         timestamp: new Date().toISOString(),
       };
 
       setAnalysisResult(mockResult);
-      setCurrentStep('result');
+      setCurrentStep("result");
     } catch (err) {
-      setError('분석에 실패했습니다. 다시 시도해주세요.');
+      setError("분석에 실패했습니다. 다시 시도해주세요.");
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle continue from result
   const handleContinueFromResult = () => {
-    if (analysisResult?.status === 'uncertain') {
-      setCurrentStep('additional-info');
-    } else if (analysisResult?.status === 'danger') {
+    if (analysisResult?.status === "uncertain") {
+      setCurrentStep("additional-info");
+    } else if (analysisResult?.status === "danger") {
       handleFetchInspectionCenters();
     }
   };
 
-  // Handle additional info submission
   const handleAdditionalInfoSubmit = async (_info: AdditionalInfo) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // TODO: Replace with actual API call
-      // You can use `info` parameter when implementing the real API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Mock updated result
       const updatedResult: AnalysisResult = {
         ...analysisResult!,
-        status: Math.random() > 0.5 ? 'safe' : 'danger',
+        status: Math.random() > 0.5 ? "safe" : "danger",
         confidence: Math.floor(Math.random() * 20) + 80,
-        message: '추가 정보를 바탕으로 보다 상세한 분석을 완료했습니다.',
+        message: "추가 정보를 바탕으로 보다 상세한 분석을 완료했습니다.",
         timestamp: new Date().toISOString(),
       };
 
       setAnalysisResult(updatedResult);
 
-      if (updatedResult.status === 'danger') {
+      if (updatedResult.status === "danger") {
         handleFetchInspectionCenters();
       } else {
-        setCurrentStep('result');
+        setCurrentStep("result");
       }
     } catch (err) {
-      setError('추가 정보 처리에 실패했습니다. 다시 시도해주세요.');
+      setError("추가 정보 처리에 실패했습니다. 다시 시도해주세요.");
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch inspection centers
   const handleFetchInspectionCenters = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // TODO: Replace with actual API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Mock inspection centers
       const mockCenters: InspectionCenter[] = [
         {
-          id: '1',
-          name: '서울 석면 검사 센터',
-          address: '서울특별시 강남구 강남대로 123',
-          distance: 2.3,
+          id: "1",
+          name: "서울 석면 검사센터",
+          address: "서울시 강남구 테헤란로 123",
+          distance: 2.5,
           estimatedCost: { min: 150000, max: 300000 },
-          inspectionTime: '3-5 영업일',
-          rating: 5,
-          phone: '02-1234-5678',
+          inspectionTime: "3-5 영업일",
+          rating: 4.8,
+          phone: "02-1234-5678",
           certified: true,
-          coordinates: { lat: 37.4979, lng: 127.0276 },
         },
         {
-          id: '2',
-          name: '한국 환경 분석 연구소',
-          address: '서울특별시 강남구 테헤란로 456',
-          distance: 3.7,
-          estimatedCost: { min: 120000, max: 250000 },
-          inspectionTime: '2-4 영업일',
-          rating: 4,
-          phone: '02-2345-6789',
-          certified: true,
-          coordinates: { lat: 37.5048, lng: 127.0495 },
-        },
-        {
-          id: '3',
-          name: '국가 석면 검사 서비스',
-          address: '서울특별시 서초구 양재대로 789',
+          id: "2",
+          name: "한국 환경 분석원",
+          address: "서울시 서초구 반포대로 456",
           distance: 5.2,
-          estimatedCost: { min: 100000, max: 200000 },
-          inspectionTime: '5-7 영업일',
-          rating: 5,
-          phone: '02-3456-7890',
+          estimatedCost: { min: 200000, max: 400000 },
+          inspectionTime: "2-4 영업일",
+          rating: 4.9,
+          phone: "02-2345-6789",
           certified: true,
-          coordinates: { lat: 37.4833, lng: 127.0322 },
         },
       ];
 
       setInspectionCenters(mockCenters);
-      setCurrentStep('inspection-centers');
+      setCurrentStep("inspection-centers");
     } catch (err) {
-      setError('검사소 정보를 불러오는데 실패했습니다. 다시 시도해주세요.');
+      setError("검사소 정보를 불러오는데 실패했습니다.");
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Reset analysis
   const handleReset = () => {
-    // Clean up image previews
     uploadedImages.forEach((img) => URL.revokeObjectURL(img.preview));
-
-    setCurrentStep('upload');
+    setCurrentStep("upload");
     setUploadedImages([]);
     setAnalysisResult(null);
     setInspectionCenters([]);
     setError(null);
   };
 
-  // Render progress steps - simplified
   const renderProgressSteps = () => {
     const steps = [
-      { id: 'upload', label: '업로드', number: 1 },
-      { id: 'result', label: '결과', number: 2 },
-      { id: 'inspection-centers', label: '검사소', number: 3 },
+      { id: "upload", label: "업로드", number: 1 },
+      { id: "result", label: "결과", number: 2 },
+      { id: "inspection-centers", label: "검사소", number: 3 },
     ];
 
     const getCurrentStepNumber = () => {
       switch (currentStep) {
-        case 'upload': return 1;
-        case 'result': return 2;
-        case 'additional-info': return 2;
-        case 'inspection-centers': return 3;
-        default: return 1;
+        case "upload":
+          return 1;
+        case "result":
+          return 2;
+        case "additional-info":
+          return 2;
+        case "inspection-centers":
+          return 3;
+        default:
+          return 1;
       }
     };
 
     const currentNumber = getCurrentStepNumber();
 
     return (
-      <div className="flex items-center justify-center gap-3 mb-8">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "16px",
+          marginBottom: "40px",
+        }}
+      >
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
-            <div className="flex flex-col items-center">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                  step.number <= currentNumber
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-600'
-                }`}
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                  transition: "all 0.3s",
+                  background:
+                    step.number <= currentNumber ? "#2563eb" : "#e5e7eb",
+                  color: step.number <= currentNumber ? "white" : "#6b7280",
+                  transform:
+                    step.number <= currentNumber ? "scale(1.1)" : "scale(1)",
+                }}
               >
                 {step.number}
               </div>
-              <span className={`text-xs mt-1 ${step.number <= currentNumber ? 'text-blue-600' : 'text-gray-500'}`}>
+              <span
+                style={{
+                  fontSize: "13px",
+                  marginTop: "8px",
+                  fontWeight: "600",
+                  color: step.number <= currentNumber ? "#2563eb" : "#9ca3af",
+                }}
+              >
                 {step.label}
               </span>
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-12 h-1 rounded ${
-                  step.number < currentNumber ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
+                style={{
+                  width: "60px",
+                  height: "3px",
+                  borderRadius: "9999px",
+                  transition: "all 0.3s",
+                  background:
+                    step.number < currentNumber ? "#2563eb" : "#e5e7eb",
+                }}
               />
             )}
           </React.Fragment>
@@ -240,82 +267,208 @@ export const AnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white w-full flex flex-col items-center py-16">
-      <div className="w-full max-w-[1400px] px-8 lg:px-16">
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "linear-gradient(180deg, #ffffff 0%, #f0f7ff 50%, #ffffff 100%)",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: "50px",
+        paddingBottom: "50px",
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: "800px", padding: "0 40px" }}>
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <h1
+            style={{
+              fontSize: "40px",
+              fontWeight: "900",
+              color: "#111827",
+              marginBottom: "12px",
+            }}
+          >
             석면 분석
           </h1>
-          <p className="text-lg text-gray-600">
+          <p style={{ fontSize: "16px", color: "#4b5563" }}>
             AI 기반 예비 스크리닝을 위해 이미지를 업로드하세요
           </p>
         </div>
 
-          {/* Progress Steps */}
-          {renderProgressSteps()}
+        {/* Progress Steps */}
+        {renderProgressSteps()}
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600">{error}</p>
+          <div
+            style={{
+              marginBottom: "24px",
+              padding: "20px",
+              background: "#fef2f2",
+              border: "2px solid #fecaca",
+              borderRadius: "16px",
+            }}
+          >
+            <p
+              style={{
+                color: "#dc2626",
+                fontWeight: "600",
+                textAlign: "center",
+                fontSize: "14px",
+              }}
+            >
+              {error}
+            </p>
           </div>
         )}
 
         {/* Loading */}
         {isLoading && (
-          <Card className="mb-6">
+          <div
+            style={{
+              marginBottom: "24px",
+              background: "white",
+              borderRadius: "20px",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+              padding: "48px",
+            }}
+          >
             <LoadingSpinner size="lg" message="이미지를 분석하고 있습니다..." />
-          </Card>
+          </div>
         )}
 
         {/* Step Content */}
         {!isLoading && (
           <>
             {/* Upload Step */}
-            {currentStep === 'upload' && (
-              <div className="space-y-6">
-                <ImageUploader onImagesSelected={handleImagesSelected} maxFiles={1} />
+            {currentStep === "upload" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "24px",
+                }}
+              >
+                <ImageUploader
+                  onImagesSelected={handleImagesSelected}
+                  maxFiles={1}
+                />
 
                 {/* Image Preview */}
                 {uploadedImages.length > 0 && (
-                  <Card title="업로드된 이미지">
-                    <div className="grid grid-cols-1 gap-4">
-                      {uploadedImages.map((image) => (
-                        <div key={image.id} className="relative">
-                          <img
-                            src={image.preview}
-                            alt="업로드됨"
-                            className="w-full h-64 object-contain bg-gray-100 rounded-lg"
-                          />
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={() => setUploadedImages([])}
-                            className="absolute top-3 right-3"
-                          >
-                            삭제
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-6">
-                      <Button
-                        onClick={handleAnalyze}
-                        variant="primary"
-                        size="lg"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  <div
+                    style={{
+                      background: "white",
+                      borderRadius: "20px",
+                      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div style={{ padding: "28px" }}>
+                      <h3
+                        style={{
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          color: "#111827",
+                          marginBottom: "20px",
+                        }}
                       >
-                        이미지 분석하기
-                      </Button>
+                        업로드된 이미지
+                      </h3>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr",
+                          gap: "20px",
+                        }}
+                      >
+                        {uploadedImages.map((image) => (
+                          <div
+                            key={image.id}
+                            style={{
+                              position: "relative",
+                              borderRadius: "16px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <img
+                              src={image.preview}
+                              alt="업로드됨"
+                              style={{
+                                width: "100%",
+                                height: "320px",
+                                objectFit: "contain",
+                                background: "#f3f4f6",
+                                borderRadius: "16px",
+                              }}
+                            />
+                            <button
+                              onClick={() => setUploadedImages([])}
+                              style={{
+                                position: "absolute",
+                                top: "12px",
+                                right: "12px",
+                                background: "#dc2626",
+                                color: "white",
+                                padding: "8px 16px",
+                                borderRadius: "8px",
+                                border: "none",
+                                cursor: "pointer",
+                                fontSize: "13px",
+                                fontWeight: "600",
+                                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.background = "#b91c1c")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.background = "#dc2626")
+                              }
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ marginTop: "24px" }}>
+                        <button
+                          onClick={handleAnalyze}
+                          style={{
+                            width: "100%",
+                            background: "#2563eb",
+                            color: "white",
+                            padding: "16px",
+                            fontSize: "16px",
+                            fontWeight: "700",
+                            borderRadius: "12px",
+                            border: "none",
+                            cursor: "pointer",
+                            boxShadow: "0 10px 20px rgba(37, 99, 235, 0.3)",
+                            transition: "all 0.2s",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.background = "#1d4ed8";
+                            e.currentTarget.style.transform = "scale(1.02)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.background = "#2563eb";
+                            e.currentTarget.style.transform = "scale(1)";
+                          }}
+                        >
+                          이미지 분석하기 →
+                        </button>
+                      </div>
                     </div>
-                  </Card>
+                  </div>
                 )}
               </div>
             )}
 
             {/* Result Step */}
-            {currentStep === 'result' && analysisResult && (
+            {currentStep === "result" && analysisResult && (
               <AnalysisResultComponent
                 result={analysisResult}
                 onContinue={handleContinueFromResult}
@@ -324,26 +477,41 @@ export const AnalysisPage: React.FC = () => {
             )}
 
             {/* Additional Info Step */}
-            {currentStep === 'additional-info' && (
+            {currentStep === "additional-info" && (
               <AdditionalInfoForm
                 onSubmit={handleAdditionalInfoSubmit}
-                onBack={() => setCurrentStep('result')}
+                onBack={() => setCurrentStep("result")}
               />
             )}
 
             {/* Inspection Centers Step */}
-            {currentStep === 'inspection-centers' && (
+            {currentStep === "inspection-centers" && (
               <div>
                 <InspectionCenterList centers={inspectionCenters} />
-                <div className="mt-8 text-center">
-                  <Button
+                <div style={{ marginTop: "32px", textAlign: "center" }}>
+                  <button
                     onClick={handleReset}
-                    variant="outline"
-                    size="lg"
-                    className="px-8 py-3"
+                    style={{
+                      background: "white",
+                      border: "2px solid #2563eb",
+                      color: "#2563eb",
+                      padding: "14px 36px",
+                      fontSize: "16px",
+                      fontWeight: "700",
+                      borderRadius: "12px",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = "#eff6ff";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = "white";
+                    }}
                   >
                     새로운 분석 시작하기
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}

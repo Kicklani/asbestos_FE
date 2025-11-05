@@ -1,16 +1,19 @@
-import React from 'react';
-import { CardProps } from '@/types';
+import React from "react";
+import { CardProps } from "@/types";
 
 export const Card: React.FC<CardProps> = ({
   children,
   title,
   subtitle,
-  className = '',
+  className = "",
   hoverable = false,
   onClick,
 }) => {
-  const baseStyles = 'bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden';
-  const hoverStyles = hoverable ? 'hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer' : '';
+  const baseStyles =
+    "bg-white rounded-3xl shadow-xl overflow-hidden transition-all duration-300";
+  const hoverStyles = hoverable
+    ? "hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+    : "";
 
   return (
     <div
@@ -18,14 +21,20 @@ export const Card: React.FC<CardProps> = ({
       onClick={onClick}
     >
       {(title || subtitle) && (
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          {title && <h3 className="text-lg font-semibold text-gray-900">{title}</h3>}
-          {subtitle && <p className="text-sm text-gray-600 mt-1">{subtitle}</p>}
+        <div className="px-8 pt-8 pb-6 border-b-2 border-gray-100">
+          {title && (
+            <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+              {title}
+            </h2>
+          )}
+          {subtitle && (
+            <p className="text-base text-gray-600 leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </div>
       )}
-      <div className="p-6">
-        {children}
-      </div>
+      <div className={title || subtitle ? "p-8" : "p-0"}>{children}</div>
     </div>
   );
 };
