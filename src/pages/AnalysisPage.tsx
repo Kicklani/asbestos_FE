@@ -188,11 +188,11 @@ export const AnalysisPage: React.FC = () => {
     setError(null);
   };
 
-  // Render progress steps
+  // Render progress steps - simplified
   const renderProgressSteps = () => {
     const steps = [
       { id: 'upload', label: '업로드', number: 1 },
-      { id: 'result', label: '결과 확인', number: 2 },
+      { id: 'result', label: '결과', number: 2 },
       { id: 'inspection-centers', label: '검사소', number: 3 },
     ];
 
@@ -209,27 +209,27 @@ export const AnalysisPage: React.FC = () => {
     const currentNumber = getCurrentStepNumber();
 
     return (
-      <div className="flex items-center justify-center gap-4 mb-12">
+      <div className="flex items-center justify-center gap-3 mb-8">
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg shadow-lg transition-all duration-300 ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
                   step.number <= currentNumber
-                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white scale-110'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 {step.number}
               </div>
-              <span className={`text-sm mt-2 font-semibold ${step.number <= currentNumber ? 'text-blue-600' : 'text-gray-500'}`}>
+              <span className={`text-xs mt-1 ${step.number <= currentNumber ? 'text-blue-600' : 'text-gray-500'}`}>
                 {step.label}
               </span>
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-16 h-1.5 rounded-full transition-all duration-300 ${
-                  step.number < currentNumber ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-gray-200'
+                className={`w-12 h-1 rounded ${
+                  step.number < currentNumber ? 'bg-blue-600' : 'bg-gray-200'
                 }`}
               />
             )}
@@ -240,119 +240,115 @@ export const AnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-50 via-white to-gray-50 min-h-screen py-12 md:py-20">
-      <div className="w-full px-6 lg:px-16 xl:px-24">
-        <div className="max-w-[1400px] mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4">
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                석면 분석
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              AI 기반 예비 스크리닝을 위해 이미지를 업로드하세요
-            </p>
-          </div>
+    <div className="min-h-screen bg-white w-full flex flex-col items-center py-16">
+      <div className="w-full max-w-[1400px] px-8 lg:px-16">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            석면 분석
+          </h1>
+          <p className="text-lg text-gray-600">
+            AI 기반 예비 스크리닝을 위해 이미지를 업로드하세요
+          </p>
+        </div>
 
           {/* Progress Steps */}
           {renderProgressSteps()}
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-2xl shadow-lg">
-              <p className="text-red-600 text-lg font-semibold">{error}</p>
-            </div>
-          )}
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
 
-          {/* Loading */}
-          {isLoading && (
-            <Card className="mb-8">
-              <LoadingSpinner size="lg" message="이미지를 분석하고 있습니다..." />
-            </Card>
-          )}
+        {/* Loading */}
+        {isLoading && (
+          <Card className="mb-6">
+            <LoadingSpinner size="lg" message="이미지를 분석하고 있습니다..." />
+          </Card>
+        )}
 
-          {/* Step Content */}
-          {!isLoading && (
-            <>
-              {/* Upload Step */}
-              {currentStep === 'upload' && (
-                <div className="space-y-8">
-                  <ImageUploader onImagesSelected={handleImagesSelected} maxFiles={1} />
+        {/* Step Content */}
+        {!isLoading && (
+          <>
+            {/* Upload Step */}
+            {currentStep === 'upload' && (
+              <div className="space-y-6">
+                <ImageUploader onImagesSelected={handleImagesSelected} maxFiles={1} />
 
-                  {/* Image Preview */}
-                  {uploadedImages.length > 0 && (
-                    <Card title="업로드된 이미지">
-                      <div className="grid grid-cols-1 gap-6">
-                        {uploadedImages.map((image) => (
-                          <div key={image.id} className="relative">
-                            <img
-                              src={image.preview}
-                              alt="업로드됨"
-                              className="w-full h-80 object-contain bg-gray-100 rounded-2xl shadow-lg"
-                            />
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => setUploadedImages([])}
-                              className="absolute top-4 right-4 shadow-xl"
-                            >
-                              삭제
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-8">
-                        <Button
-                          onClick={handleAnalyze}
-                          variant="primary"
-                          size="lg"
-                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-2xl px-10 py-5 text-xl font-bold rounded-2xl transform hover:scale-105 transition-all"
-                        >
-                          이미지 분석하기 🔬
-                        </Button>
-                      </div>
-                    </Card>
-                  )}
+                {/* Image Preview */}
+                {uploadedImages.length > 0 && (
+                  <Card title="업로드된 이미지">
+                    <div className="grid grid-cols-1 gap-4">
+                      {uploadedImages.map((image) => (
+                        <div key={image.id} className="relative">
+                          <img
+                            src={image.preview}
+                            alt="업로드됨"
+                            className="w-full h-64 object-contain bg-gray-100 rounded-lg"
+                          />
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => setUploadedImages([])}
+                            className="absolute top-3 right-3"
+                          >
+                            삭제
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6">
+                      <Button
+                        onClick={handleAnalyze}
+                        variant="primary"
+                        size="lg"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        이미지 분석하기
+                      </Button>
+                    </div>
+                  </Card>
+                )}
+              </div>
+            )}
+
+            {/* Result Step */}
+            {currentStep === 'result' && analysisResult && (
+              <AnalysisResultComponent
+                result={analysisResult}
+                onContinue={handleContinueFromResult}
+                onReset={handleReset}
+              />
+            )}
+
+            {/* Additional Info Step */}
+            {currentStep === 'additional-info' && (
+              <AdditionalInfoForm
+                onSubmit={handleAdditionalInfoSubmit}
+                onBack={() => setCurrentStep('result')}
+              />
+            )}
+
+            {/* Inspection Centers Step */}
+            {currentStep === 'inspection-centers' && (
+              <div>
+                <InspectionCenterList centers={inspectionCenters} />
+                <div className="mt-8 text-center">
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    size="lg"
+                    className="px-8 py-3"
+                  >
+                    새로운 분석 시작하기
+                  </Button>
                 </div>
-              )}
-
-              {/* Result Step */}
-              {currentStep === 'result' && analysisResult && (
-                <AnalysisResultComponent
-                  result={analysisResult}
-                  onContinue={handleContinueFromResult}
-                  onReset={handleReset}
-                />
-              )}
-
-              {/* Additional Info Step */}
-              {currentStep === 'additional-info' && (
-                <AdditionalInfoForm
-                  onSubmit={handleAdditionalInfoSubmit}
-                  onBack={() => setCurrentStep('result')}
-                />
-              )}
-
-              {/* Inspection Centers Step */}
-              {currentStep === 'inspection-centers' && (
-                <div>
-                  <InspectionCenterList centers={inspectionCenters} />
-                  <div className="mt-10 text-center">
-                    <Button
-                      onClick={handleReset}
-                      variant="outline"
-                      size="lg"
-                      className="px-10 py-4 text-lg font-bold rounded-2xl border-3 border-blue-600 text-blue-600 hover:bg-blue-50 transform hover:scale-105 transition-all"
-                    >
-                      새로운 분석 시작하기
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
