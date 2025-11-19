@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { InspectionCenter } from "@/types";
-import { Card, Badge, Button, Modal } from "@/components/common";
 
 interface InspectionCenterListProps {
   centers: InspectionCenter[];
@@ -14,13 +13,6 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
     null
   );
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("ko-KR", {
-      style: "currency",
-      currency: "KRW",
-    }).format(amount);
-  };
-
   const formatDistance = (distance: number) => {
     if (distance < 1) {
       return `${Math.round(distance * 1000)}m`;
@@ -28,269 +20,274 @@ export const InspectionCenterList: React.FC<InspectionCenterListProps> = ({
     return `${distance.toFixed(1)}km`;
   };
 
-  const renderRating = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span
-          key={i}
-          className={i <= rating ? "text-yellow-400" : "text-gray-300"}
-        >
-          ★
-        </span>
-      );
-    }
-    return <div className="flex gap-0.5">{stars}</div>;
-  };
-
   if (centers.length === 0) {
     return (
-      <Card className="text-center py-12 bg-white rounded-3xl shadow-2xl border-2 border-blue-100">
-        <div className="text-gray-500">
-          <svg
-            className="w-20 h-20 mx-auto mb-6 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <p className="text-2xl font-bold">검사소를 찾을 수 없습니다</p>
-          <p className="text-base mt-3">
-            위치를 조정하거나 고객 지원에 문의하세요
-          </p>
-        </div>
-      </Card>
+      <div
+        style={{
+          textAlign: "center",
+          padding: "48px",
+          background: "white",
+          borderRadius: "16px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <p style={{ fontSize: "18px", fontWeight: "700", color: "#6b7280" }}>
+          검사소를 찾을 수 없습니다
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="mb-8">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
+    <div>
+      <div style={{ marginBottom: "32px", textAlign: "center" }}>
+        <h2
+          style={{
+            fontSize: "28px",
+            fontWeight: "900",
+            color: "#111827",
+            marginBottom: "8px",
+          }}
+        >
           근처 검사소
         </h2>
-        <p className="text-xl text-gray-600">
+        <p style={{ fontSize: "15px", color: "#6b7280" }}>
           근처에서 {centers.length}개의 인증된 검사소를 찾았습니다
         </p>
       </div>
 
-      {centers.map((center) => (
-        <Card
-          key={center.id}
-          hoverable
-          onClick={() => setSelectedCenter(center)}
-          className="cursor-pointer bg-white rounded-3xl shadow-xl border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 transform hover:-translate-y-2"
-        >
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-            {/* Center Info */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3 mb-2">
-                    {center.name}
-                    {center.certified && (
-                      <Badge variant="success" size="sm">
-                        인증
-                      </Badge>
-                    )}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {renderRating(center.rating)}
-                    <span className="text-base font-semibold text-gray-600">
-                      ({center.rating}.0)
-                    </span>
-                  </div>
-                </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {centers.map((center) => (
+          <div
+            key={center.id}
+            onClick={() => setSelectedCenter(center)}
+            style={{
+              background: "white",
+              borderRadius: "16px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+              padding: "24px",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              border: "2px solid #e5e7eb",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow =
+                "0 8px 20px rgba(59, 130, 246, 0.15)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(0, 0, 0, 0.08)";
+            }}
+          >
+            <div style={{ marginBottom: "16px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginBottom: "8px",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "700",
+                    color: "#111827",
+                  }}
+                >
+                  {center.name}
+                </h3>
+                {center.certified && (
+                  <span
+                    style={{
+                      background: "#d1fae5",
+                      color: "#065f46",
+                      padding: "4px 10px",
+                      borderRadius: "8px",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    인증
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                fontSize: "14px",
+                color: "#4b5563",
+              }}
+            >
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                <span style={{ fontSize: "16px" }}>📍</span>
+                <span>{center.address}</span>
               </div>
 
-              <div className="space-y-3 text-base text-gray-600">
-                <div className="flex items-start gap-3">
-                  <svg
-                    className="w-5 h-5 mt-0.5 text-blue-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <span>{center.address}</span>
-                </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                <span style={{ fontSize: "16px" }}>📞</span>
+                <span>{center.phone}</span>
+              </div>
 
-                <div className="flex items-center gap-3">
-                  <svg
-                    className="w-5 h-5 text-blue-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                  <span>{center.phone}</span>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <svg
-                    className="w-5 h-5 text-blue-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    />
-                  </svg>
-                  <span>{formatDistance(center.distance)} 거리</span>
-                </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                <span style={{ fontSize: "16px" }}>🚗</span>
+                <span>{formatDistance(center.distance)} 거리</span>
               </div>
             </div>
           </div>
-        </Card>
-      ))}
+        ))}
+      </div>
 
       {/* Detail Modal */}
       {selectedCenter && (
-        <Modal
-          isOpen={!!selectedCenter}
-          onClose={() => setSelectedCenter(null)}
-          title={selectedCenter.name}
-          size="lg"
-          footer={
-            <div className="flex gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setSelectedCenter(null)}
-                className="px-6 py-3 text-base font-bold rounded-xl"
-              >
-                닫기
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() =>
-                  window.open(`tel:${selectedCenter.phone}`, "_self")
-                }
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-8 py-3 text-base font-bold rounded-xl shadow-xl"
-                icon={
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                }
-              >
-                지금 전화하기
-              </Button>
-            </div>
-          }
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px",
+          }}
+          onClick={() => setSelectedCenter(null)}
         >
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              {renderRating(selectedCenter.rating)}
-              <span className="text-base font-semibold text-gray-600">
-                ({selectedCenter.rating}.0 평점)
-              </span>
+          <div
+            style={{
+              background: "white",
+              borderRadius: "20px",
+              maxWidth: "600px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflow: "auto",
+              padding: "32px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "24px",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "900",
+                  color: "#111827",
+                }}
+              >
+                {selectedCenter.name}
+              </h3>
               {selectedCenter.certified && (
-                <Badge variant="success" size="sm">
+                <span
+                  style={{
+                    background: "#d1fae5",
+                    color: "#065f46",
+                    padding: "4px 10px",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                >
                   인증
-                </Badge>
+                </span>
               )}
             </div>
 
-            <div className="space-y-4 text-base">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                marginBottom: "24px",
+              }}
+            >
               <div>
-                <p className="font-bold text-gray-700 mb-2">주소</p>
-                <p className="text-gray-600">{selectedCenter.address}</p>
+                <p
+                  style={{
+                    fontWeight: "700",
+                    color: "#374151",
+                    marginBottom: "6px",
+                  }}
+                >
+                  주소
+                </p>
+                <p style={{ color: "#6b7280" }}>{selectedCenter.address}</p>
               </div>
 
               <div>
-                <p className="font-bold text-gray-700 mb-2">전화번호</p>
-                <p className="text-gray-600">{selectedCenter.phone}</p>
+                <p
+                  style={{
+                    fontWeight: "700",
+                    color: "#374151",
+                    marginBottom: "6px",
+                  }}
+                >
+                  전화번호
+                </p>
+                <p style={{ color: "#6b7280" }}>{selectedCenter.phone}</p>
               </div>
 
               <div>
-                <p className="font-bold text-gray-700 mb-2">거리</p>
-                <p className="text-gray-600">
+                <p
+                  style={{
+                    fontWeight: "700",
+                    color: "#374151",
+                    marginBottom: "6px",
+                  }}
+                >
+                  거리
+                </p>
+                <p style={{ color: "#6b7280" }}>
                   {formatDistance(selectedCenter.distance)}
                 </p>
               </div>
-
-              <div>
-                <p className="font-bold text-gray-700 mb-2">예상 비용</p>
-                <p className="text-gray-600 font-semibold">
-                  {formatCurrency(selectedCenter.estimatedCost.min)} -{" "}
-                  {formatCurrency(selectedCenter.estimatedCost.max)}
-                </p>
-              </div>
-
-              <div>
-                <p className="font-bold text-gray-700 mb-2">검사 시간</p>
-                <p className="text-gray-600">{selectedCenter.inspectionTime}</p>
-              </div>
             </div>
 
-            {selectedCenter.coordinates && (
-              <Button
-                variant="outline"
-                className="w-full px-6 py-4 text-lg font-bold rounded-xl border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
-                onClick={() => {
-                  const url = `https://www.google.com/maps/search/?api=1&query=${
-                    selectedCenter.coordinates!.lat
-                  },${selectedCenter.coordinates!.lng}`;
-                  window.open(url, "_blank");
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                onClick={() => setSelectedCenter(null)}
+                style={{
+                  flex: 1,
+                  background: "white",
+                  border: "2px solid #e5e7eb",
+                  color: "#4b5563",
+                  padding: "14px",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  transition: "all 0.2s",
                 }}
-                icon={
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                    />
-                  </svg>
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "#f9fafb")
                 }
+                onMouseOut={(e) => (e.currentTarget.style.background = "white")}
               >
-                지도에서 보기 🗺️
-              </Button>
-            )}
+                닫기
+              </button>
+            </div>
           </div>
-        </Modal>
+        </div>
       )}
     </div>
   );
