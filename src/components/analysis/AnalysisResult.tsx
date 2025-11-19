@@ -193,59 +193,11 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
             gap: "12px",
             marginTop: "32px",
           }}
         >
-          {result.status === "uncertain" && onContinue && (
-            <button
-              onClick={onContinue}
-              style={{
-                flex: 1,
-                background: "#2563eb",
-                color: "white",
-                padding: "16px",
-                fontSize: "15px",
-                fontWeight: "700",
-                borderRadius: "12px",
-                border: "none",
-                cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)",
-                transition: "all 0.2s",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.background = "#1d4ed8")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.background = "#2563eb")}
-            >
-              추가 정보 제공하기 →
-            </button>
-          )}
-          {result.status === "danger" && onContinue && (
-            <button
-              onClick={onContinue}
-              style={{
-                flex: 1,
-                background: "#dc2626",
-                color: "white",
-                padding: "16px",
-                fontSize: "15px",
-                fontWeight: "700",
-                borderRadius: "12px",
-                border: "none",
-                cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(220, 38, 38, 0.3)",
-                transition: "all 0.2s",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.background = "#b91c1c")
-              }
-              onMouseOut={(e) => (e.currentTarget.style.background = "#dc2626")}
-            >
-              검사소 찾기 →
-            </button>
-          )}
           {onReset && (
             <button
               onClick={onReset}
@@ -268,6 +220,34 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
               onMouseOut={(e) => (e.currentTarget.style.background = "white")}
             >
               새로운 분석 시작
+            </button>
+          )}
+          {onContinue && (
+            <button
+              onClick={onContinue}
+              style={{
+                flex: 1,
+                background: result.status === "danger" ? "#dc2626" : "#2563eb",
+                color: "white",
+                padding: "16px",
+                fontSize: "15px",
+                fontWeight: "700",
+                borderRadius: "12px",
+                border: "none",
+                cursor: "pointer",
+                boxShadow: result.status === "danger"
+                  ? "0 4px 12px rgba(220, 38, 38, 0.3)"
+                  : "0 4px 12px rgba(37, 99, 235, 0.3)",
+                transition: "all 0.2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = result.status === "danger" ? "#b91c1c" : "#1d4ed8")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.background = result.status === "danger" ? "#dc2626" : "#2563eb")
+              }
+            >
+              {result.status === "uncertain" ? "추가 정보 제공하기 →" : "검사소 찾기 →"}
             </button>
           )}
         </div>

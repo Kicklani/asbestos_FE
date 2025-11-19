@@ -5,7 +5,7 @@ import {
   AdditionalInfoForm,
   InspectionCenterList,
 } from "@/components/analysis";
-import { LoadingSpinner, Button } from "@/components/common";
+import { LoadingSpinner } from "@/components/common";
 import {
   ImageUpload,
   AnalysisResult,
@@ -25,6 +25,7 @@ export const AnalysisPage: React.FC = () => {
     InspectionCenter[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("이미지를 분석하고 있습니다...");
   const [error, setError] = useState<string | null>(null);
 
   const handleImagesSelected = async (files: File[]) => {
@@ -45,6 +46,7 @@ export const AnalysisPage: React.FC = () => {
     }
 
     setIsLoading(true);
+    setLoadingMessage("이미지를 분석하고 있습니다...");
     setError(null);
 
     try {
@@ -87,13 +89,15 @@ export const AnalysisPage: React.FC = () => {
   const handleContinueFromResult = () => {
     if (analysisResult?.status === "uncertain") {
       setCurrentStep("additional-info");
-    } else if (analysisResult?.status === "danger") {
+    } else {
+      // danger 또는 safe 상태 모두 검사소 페이지로 이동
       handleFetchInspectionCenters();
     }
   };
 
   const handleAdditionalInfoSubmit = async (_info: AdditionalInfo) => {
     setIsLoading(true);
+    setLoadingMessage("추가 정보를 분석하고 있습니다...");
     setError(null);
 
     try {
@@ -124,6 +128,7 @@ export const AnalysisPage: React.FC = () => {
 
   const handleFetchInspectionCenters = async () => {
     setIsLoading(true);
+    setLoadingMessage("주변 검사소를 찾고 있습니다...");
     setError(null);
 
     try {
@@ -336,7 +341,7 @@ export const AnalysisPage: React.FC = () => {
               padding: "48px",
             }}
           >
-            <LoadingSpinner size="lg" message="이미지를 분석하고 있습니다..." />
+            <LoadingSpinner size="lg" message={loadingMessage} />
           </div>
         )}
 
