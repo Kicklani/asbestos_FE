@@ -13,6 +13,7 @@ import {
   InspectionCenter,
 } from "@/types";
 import { analyzeImage, submitAdditionalInfo, getAnalysisById } from "@/api/analysisApi";
+import { generatePDFReport } from "@/utils/pdfGenerator";
 
 type Step = "upload" | "result" | "additional-info" | "inspection-centers";
 
@@ -835,7 +836,36 @@ export const AnalysisPage: React.FC = () => {
                 )}
 
                 <InspectionCenterList centers={inspectionCenters} />
-                <div style={{ marginTop: "32px", textAlign: "center" }}>
+
+                <div style={{ marginTop: "32px", display: "flex", gap: "16px", justifyContent: "center" }}>
+                  <button
+                    onClick={() => {
+                      if (analysisResult) {
+                        generatePDFReport(analysisResult, uploadedImages.map(img => img.preview), inspectionCenters);
+                      }
+                    }}
+                    style={{
+                      background: "#10b981",
+                      color: "white",
+                      padding: "14px 36px",
+                      fontSize: "16px",
+                      fontWeight: "700",
+                      borderRadius: "12px",
+                      cursor: "pointer",
+                      border: "none",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.background = "#059669";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.background = "#10b981";
+                    }}
+                  >
+                    📄 PDF 보고서 다운로드
+                  </button>
+
                   <button
                     onClick={handleReset}
                     style={{
