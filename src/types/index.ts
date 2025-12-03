@@ -121,7 +121,7 @@ export interface InputProps {
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
-  type?: 'text' | 'number' | 'email' | 'tel' | 'textarea';
+  type?: 'text' | 'number' | 'email' | 'tel' | 'textarea' | 'password';
   error?: string;
   required?: boolean;
   disabled?: boolean;

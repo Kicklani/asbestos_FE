@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/authStore";
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   const navItems = [
     { path: "/", label: "홈" },
@@ -110,6 +113,88 @@ export const Header: React.FC = () => {
               {item.label}
             </Link>
           ))}
+
+          {/* 인증 버튼 영역 */}
+          <div style={{ marginLeft: "16px", display: "flex", gap: "8px", alignItems: "center" }}>
+            {isAuthenticated ? (
+              <>
+                <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  {user?.name}님
+                </span>
+                <button
+                  onClick={() => {
+                    logout();
+                    navigate('/');
+                  }}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    border: "1px solid #d1d5db",
+                    background: "white",
+                    color: "#374151",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "#f3f4f6";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "white";
+                  }}
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    textDecoration: "none",
+                    border: "1px solid #d1d5db",
+                    background: "white",
+                    color: "#374151",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "#f3f4f6";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "white";
+                  }}
+                >
+                  로그인
+                </Link>
+                <Link
+                  to="/signup"
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    textDecoration: "none",
+                    background: "#2563eb",
+                    color: "white",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "#1d4ed8";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "#2563eb";
+                  }}
+                >
+                  회원가입
+                </Link>
+              </>
+            )}
+          </div>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -187,6 +272,74 @@ export const Header: React.FC = () => {
                 {item.label}
               </Link>
             ))}
+
+            {/* 모바일 인증 버튼 */}
+            <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #e5e7eb" }}>
+              {isAuthenticated ? (
+                <>
+                  <div style={{ padding: "12px 16px", marginBottom: "8px", color: "#6b7280" }}>
+                    {user?.name}님
+                  </div>
+                  <button
+                    onClick={() => {
+                      logout();
+                      navigate('/');
+                      setIsMenuOpen(false);
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      fontWeight: "600",
+                      border: "1px solid #d1d5db",
+                      background: "white",
+                      color: "#374151",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                    }}
+                  >
+                    로그아웃
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    style={{
+                      display: "block",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      fontWeight: "600",
+                      marginBottom: "8px",
+                      textDecoration: "none",
+                      textAlign: "center",
+                      border: "1px solid #d1d5db",
+                      background: "white",
+                      color: "#374151",
+                    }}
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setIsMenuOpen(false)}
+                    style={{
+                      display: "block",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      fontWeight: "600",
+                      textDecoration: "none",
+                      textAlign: "center",
+                      background: "#2563eb",
+                      color: "white",
+                    }}
+                  >
+                    회원가입
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </nav>
       )}
