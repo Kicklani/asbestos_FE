@@ -77,12 +77,83 @@ export const AnalysisPage: React.FC = () => {
       };
 
       setAnalysisResult(mockResult);
+
+      // 분석 완료 후 검사소 목록도 미리 가져오기
+      await fetchInspectionCentersData();
+
       setCurrentStep("result");
     } catch (err) {
       setError("분석에 실패했습니다. 다시 시도해주세요.");
       console.error(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchInspectionCentersData = async () => {
+    try {
+      // 경상국립대학교 가좌캠퍼스 기준 가까운 검사소 5곳
+      const mockCenters: InspectionCenter[] = [
+        {
+          id: "1",
+          name: "진주보건환경연구원",
+          address: "경남 진주시 동진로 169",
+          distance: 3.2,
+          estimatedCost: { min: 150000, max: 300000 },
+          inspectionTime: "3-5 영업일",
+          rating: 4.7,
+          phone: "055-749-5900",
+          certified: true,
+        },
+        {
+          id: "2",
+          name: "경남환경연구원",
+          address: "경남 진주시 칠암동 951-7",
+          distance: 4.5,
+          estimatedCost: { min: 180000, max: 350000 },
+          inspectionTime: "2-4 영업일",
+          rating: 4.8,
+          phone: "055-754-8801",
+          certified: true,
+        },
+        {
+          id: "3",
+          name: "한국환경공단 경남지사",
+          address: "경남 창원시 성산구 중앙대로 151",
+          distance: 28.5,
+          estimatedCost: { min: 200000, max: 400000 },
+          inspectionTime: "3-5 영업일",
+          rating: 4.6,
+          phone: "055-269-0500",
+          certified: true,
+        },
+        {
+          id: "4",
+          name: "㈜케이씨엘",
+          address: "경남 진주시 문산읍 삼곡리 333-1",
+          distance: 12.8,
+          estimatedCost: { min: 170000, max: 320000 },
+          inspectionTime: "2-3 영업일",
+          rating: 4.5,
+          phone: "055-761-5400",
+          certified: true,
+        },
+        {
+          id: "5",
+          name: "부산시보건환경연구원",
+          address: "부산광역시 북구 덕천동 363-14",
+          distance: 65.3,
+          estimatedCost: { min: 160000, max: 310000 },
+          inspectionTime: "4-6 영업일",
+          rating: 4.7,
+          phone: "051-309-2800",
+          certified: true,
+        },
+      ];
+
+      setInspectionCenters(mockCenters);
+    } catch (err) {
+      console.error("Failed to fetch inspection centers:", err);
     }
   };
 
@@ -512,6 +583,8 @@ export const AnalysisPage: React.FC = () => {
                 result={analysisResult}
                 onContinue={handleContinueFromResult}
                 onReset={handleReset}
+                uploadedImages={uploadedImages.map(img => img.preview)}
+                inspectionCenters={inspectionCenters}
               />
             )}
 

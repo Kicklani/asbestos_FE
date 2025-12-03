@@ -1,17 +1,26 @@
 import React from "react";
-import { AnalysisResult as AnalysisResultType } from "@/types";
+import { AnalysisResult as AnalysisResultType, InspectionCenter } from "@/types";
+import { generatePDFReport } from "@/utils/pdfGenerator";
 
 interface AnalysisResultProps {
   result: AnalysisResultType;
   onContinue?: () => void;
   onReset?: () => void;
+  uploadedImages?: string[];
+  inspectionCenters?: InspectionCenter[];
 }
 
 export const AnalysisResult: React.FC<AnalysisResultProps> = ({
   result,
   onContinue,
   onReset,
+  uploadedImages,
+  inspectionCenters,
 }) => {
+  const handleDownloadPDF = () => {
+    generatePDFReport(result, uploadedImages, inspectionCenters);
+  };
+
   const getStatusConfig = (status: AnalysisResultType["status"]) => {
     switch (status) {
       case "safe":
@@ -189,13 +198,48 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({
           </div>
         )}
 
+        {/* PDF Download Button */}
+        <div style={{ marginTop: "24px" }}>
+          <button
+            onClick={handleDownloadPDF}
+            style={{
+              width: "100%",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              padding: "16px",
+              fontSize: "15px",
+              fontWeight: "700",
+              borderRadius: "12px",
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(102, 126, 234, 0.4)",
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 6px 16px rgba(102, 126, 234, 0.5)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.4)";
+            }}
+          >
+            <span style={{ fontSize: "18px" }}>📄</span>
+            PDF 보고서 다운로드
+          </button>
+        </div>
+
         {/* Action Buttons */}
         <div
           style={{
             display: "flex",
             flexDirection: "row",
             gap: "12px",
-            marginTop: "32px",
+            marginTop: "16px",
           }}
         >
           {onReset && (
