@@ -1,23 +1,22 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { useAuthStore } from '@/store/authStore';
 
 // Create axios instance with default config
 const client: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor for adding auth token or other modifications
+// Request interceptor - Access Token 자동 추가
 client.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Add auth token if available
-    const token = localStorage.getItem('authToken');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const { accessToken } = useAuthStore.getState();
+    if (accessToken && config.headers) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
-
     return config;
   },
   (error: AxiosError) => {
@@ -25,21 +24,38 @@ client.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor - 401 에러 시 토큰 갱신
 client.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+    // 401 에러이고 재시도가 아닌 경우
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // 토큰 갱신
+        await useAuthStore.getState().refreshAccessToken();
+
+        // 새 토큰으로 원래 요청 재시도
+        const { accessToken } = useAuthStore.getState();
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return client(originalRequest);
+      } catch (refreshError) {
+        // 토큰 갱신 실패 시 로그인 페이지로 이동
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+
     // Handle different error statuses
     if (error.response) {
       switch (error.response.status) {
-        case 401:
-          // Unauthorized - clear auth and redirect to login
-          localStorage.removeItem('authToken');
-          // You can add redirect logic here
-          console.error('Unauthorized access - please login');
-          break;
         case 403:
           console.error('Forbidden - insufficient permissions');
           break;
@@ -53,10 +69,8 @@ client.interceptors.response.use(
           console.error(`Error: ${error.response.status}`);
       }
     } else if (error.request) {
-      // Request made but no response received
       console.error('Network error - no response from server');
     } else {
-      // Error in request configuration
       console.error('Error:', error.message);
     }
 
