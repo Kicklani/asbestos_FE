@@ -7,7 +7,7 @@ import { SignupPage } from '@/pages/auth/SignupPage';
 
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/asbestos_FE">
       <Routes>
         {/* 인증 페이지 (레이아웃 없음) */}
         <Route path="/login" element={<LoginPage />} />
