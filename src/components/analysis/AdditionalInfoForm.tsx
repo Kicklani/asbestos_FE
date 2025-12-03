@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Button } from '@/components/common';
+import { Input } from '@/components/common';
 import { AdditionalInfo, ImageUpload } from '@/types';
 import { ImageUploader } from './ImageUploader';
 
