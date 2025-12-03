@@ -80,22 +80,22 @@ app.use(cors(corsOptions));
 The following endpoints are currently being called from the frontend and need CORS enabled:
 
 1. **Authentication**
-   - `POST /auth/signup` - User registration
-   - `POST /auth/login` - User login
-   - `POST /auth/token` - Token refresh
+   - `POST /api/auth/signup` - User registration
+   - `POST /api/auth/login` - User login
+   - `POST /api/auth/token` - Token refresh
+   - `GET /api/auth/me` - Get current user information
+   - `POST /api/auth/email/send` - Send email verification code
+   - `POST /api/auth/email/verify` - Verify email code
 
 2. **Analysis**
-   - `POST /analysis/upload` - Image upload and analysis
-   - `POST /analysis/additional-info` - Submit additional information
-   - `GET /analysis/history` - Get user's analysis history
-   - `GET /analysis/:id` - Get specific analysis result
-   - `DELETE /analysis/:id` - Delete analysis record
+   - `POST /api/analysis/upload` - Image upload and analysis
+   - `POST /api/analysis/additional-info` - Submit additional information
+   - `GET /api/analysis/history` - Get user's analysis history
+   - `GET /api/analysis/:id` - Get specific analysis result
+   - `DELETE /api/analysis/:id` - Delete analysis record
 
 3. **Inspection Centers**
-   - `GET /inspection-centers` - Get nearby inspection centers
-
-4. **User**
-   - `GET /auth/me` - Get current user information
+   - `GET /api/inspection-centers` - Get nearby inspection centers
 
 ## Testing CORS Configuration
 
@@ -108,7 +108,7 @@ curl -H "Origin: http://localhost:3000" \
      -H "Access-Control-Request-Headers: Content-Type,Authorization" \
      -X OPTIONS \
      --verbose \
-     https://asbestosbe-production.up.railway.app/auth/signup
+     https://asbestosbe-production.up.railway.app/api/auth/signup
 ```
 
 Expected response should include:

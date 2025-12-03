@@ -17,11 +17,11 @@ export const analyzeImage = async (imageFile: File): Promise<AnalysisApiResponse
   formData.append('image', imageFile);
 
   console.log("FormData 생성 완료");
-  console.log("요청 URL:", '/analysis/upload');
+  console.log("요청 URL:", '/api/analysis/upload');
 
   try {
     const response = await client.post<ApiResponse<AnalysisApiResponse>>(
-      '/analysis/upload',
+      '/api/analysis/upload',
       formData,
       {
         headers: {
@@ -67,7 +67,7 @@ export const submitAdditionalInfo = async (
   });
 
   const response = await client.post<ApiResponse<AnalysisApiResponse>>(
-    '/analysis/additional-info',
+    '/api/analysis/additional-info',
     formData,
     {
       headers: {
@@ -94,7 +94,7 @@ export const getInspectionCenters = async (
   }
 
   const response = await client.get<ApiResponse<InspectionCentersApiResponse>>(
-    '/inspection-centers',
+    '/api/inspection-centers',
     { params }
   );
 
@@ -105,7 +105,7 @@ export const getInspectionCenters = async (
  * Get analysis history for current user
  */
 export const getAnalysisHistory = async () => {
-  const response = await client.get('/analysis/history');
+  const response = await client.get('/api/analysis/history');
   return response.data.data;
 };
 
@@ -113,7 +113,7 @@ export const getAnalysisHistory = async () => {
  * Get specific analysis result by ID
  */
 export const getAnalysisById = async (analysisId: string) => {
-  const response = await client.get(`/analysis/${analysisId}`);
+  const response = await client.get(`/api/analysis/${analysisId}`);
   return response.data.data;
 };
 
@@ -121,6 +121,6 @@ export const getAnalysisById = async (analysisId: string) => {
  * Delete analysis record
  */
 export const deleteAnalysis = async (analysisId: string) => {
-  const response = await client.delete(`/analysis/${analysisId}`);
+  const response = await client.delete(`/api/analysis/${analysisId}`);
   return response.data;
 };
