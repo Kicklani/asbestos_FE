@@ -61,8 +61,8 @@ export const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
       newErrors.depth = '유효한 깊이를 입력하세요';
     }
 
-    if (additionalImages.length === 0) {
-      newErrors.images = '최소 한 개 이상의 추가 이미지를 업로드하세요';
+    if (additionalImages.length < 2) {
+      newErrors.images = '최소 2개 이상의 추가 이미지를 업로드하세요';
     }
 
     setErrors(newErrors);

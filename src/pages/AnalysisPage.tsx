@@ -258,15 +258,62 @@ export const AnalysisPage: React.FC = () => {
       // 실제 API 호출
       const apiResponse = await submitAdditionalInfo(analysisResult!.id, info);
 
+      console.log("=== 2단계 분석 응답 처리 ===");
+      console.log("API 응답:", apiResponse);
+
+      // 백엔드 응답 구조에서 데이터 추출 (1단계와 동일한 구조)
+      const resultData: any = (apiResponse as any).result ?? apiResponse;
+
+      console.log("추출된 결과 데이터:", resultData);
+
+      // 백엔드 응답 구조에 맞게 필드 추출
+      const resultId = resultData.ID ?? resultData.id ?? analysisResult!.id;
+
+      // 탐지 점수를 confidence로 변환 (0-1 → 0-100)
+      const detectionScore = resultData.ai_result?.탐지_점수 ?? 0;
+      const confidence = Math.round(detectionScore * 100);
+
+      // status에 따른 메시지 생성
+      const statusMessage = resultData.status?.코드_명칭 ?? "2단계 분석 완료";
+
+      // 백엔드 응답에서 위험도 추출
+      // ai_result.세그멘테이션_JSON에서 가장 큰 값을 가진 키로 위험도 결정
+      let statusValue: "safe" | "danger" | "uncertain" = "safe"; // 기본값
+
+      if (resultData.ai_result && resultData.ai_result.세그멘테이션_JSON) {
+        const segmentation = resultData.ai_result.세그멘테이션_JSON;
+
+        const lowRisk = segmentation.low_risk ?? 0;
+        const mediumRisk = segmentation.medium_risk ?? 0;
+        const highRisk = segmentation.high_risk ?? 0;
+
+        console.log("위험도 값:", { lowRisk, mediumRisk, highRisk });
+
+        // 가장 큰 값을 찾아서 위험도 결정
+        const maxValue = Math.max(lowRisk, mediumRisk, highRisk);
+
+        if (maxValue === highRisk && highRisk > 0) {
+          statusValue = "danger"; // 고위험 → 빨간색
+        } else if (maxValue === mediumRisk && mediumRisk > 0) {
+          statusValue = "uncertain"; // 중위험 → 노란색
+        } else if (maxValue === lowRisk && lowRisk > 0) {
+          statusValue = "safe"; // 저위험 → 초록색
+        }
+
+        console.log("결정된 위험도:", statusValue);
+      }
+
       const updatedResult: AnalysisResult = {
-        id: apiResponse.result.id,
-        status: apiResponse.result.status,
-        confidence: apiResponse.result.confidence,
-        message: apiResponse.result.message || "추가 정보를 바탕으로 보다 상세한 분석을 완료했습니다.",
-        detectedFeatures: apiResponse.result.detectedFeatures || analysisResult!.detectedFeatures,
-        recommendations: apiResponse.result.recommendations || analysisResult!.recommendations,
-        timestamp: apiResponse.result.timestamp || new Date().toISOString(),
+        id: resultId,
+        status: statusValue,
+        confidence: confidence,
+        message: statusMessage,
+        detectedFeatures: resultData.ai_result?.감지된_특징 ?? analysisResult!.detectedFeatures ?? [],
+        recommendations: resultData.권장사항 ?? analysisResult!.recommendations ?? [],
+        timestamp: resultData.분석_시간 ?? resultData.timestamp ?? new Date().toISOString(),
       };
+
+      console.log("업데이트된 분석 결과:", updatedResult);
 
       setAnalysisResult(updatedResult);
 
@@ -276,6 +323,8 @@ export const AnalysisPage: React.FC = () => {
         setCurrentStep("result");
       }
     } catch (err: any) {
+      console.error("=== 2단계 분석 처리 에러 ===");
+      console.error("에러:", err);
       setError(err.response?.data?.message || "추가 정보 처리에 실패했습니다. 다시 시도해주세요.");
       console.error("Additional info error:", err);
     } finally {

@@ -59,38 +59,74 @@ export const analyzeImage = async (imageFile: File): Promise<AnalysisApiResponse
 };
 
 /**
- * Submit additional information for more detailed analysis
+ * Submit additional information for more detailed analysis (2단계 분석)
  */
 export const submitAdditionalInfo = async (
   analysisId: string,
   additionalInfo: AdditionalInfo
 ): Promise<AnalysisApiResponse> => {
+  console.log("=== 2단계 분석 요청 ===");
+  console.log("분석 ID:", analysisId);
+  console.log("추가 정보:", additionalInfo);
+
   const formData = new FormData();
 
-  // Append text data
-  formData.append('analysisId', analysisId);
-  formData.append('location', additionalInfo.location);
-  formData.append('size', JSON.stringify(additionalInfo.size));
-  if (additionalInfo.notes) {
-    formData.append('notes', additionalInfo.notes);
-  }
-
-  // Append additional images
-  additionalInfo.additionalImages.forEach((image) => {
-    formData.append(`additionalImages`, image.file);
+  // Append additional images (image1, image2, ...)
+  additionalInfo.additionalImages.forEach((image, index) => {
+    formData.append(`image${index + 1}`, image.file);
   });
 
-  const response = await client.post<ApiResponse<AnalysisApiResponse>>(
-    '/api/analysis/additional-info',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
+  // Append location data as JSON string (숫자를 JSON string으로)
+  if (additionalInfo.location) {
+    // location에서 위도/경도 추출 (예: "서울특별시 강남구" 같은 텍스트가 올 수 있음)
+    // 현재는 임시로 기본 위치 사용, 추후 geocoding API 연동 필요
+    formData.append('latitude', JSON.stringify(35.15632021200898));
+    formData.append('longitude', JSON.stringify(128.09313284826987));
+  }
 
-  return response.data.data;
+  console.log("FormData 생성 완료");
+  console.log("요청 URL:", `/api/analysis/${analysisId}`);
+
+  try {
+    const response = await client.post<ApiResponse<AnalysisApiResponse>>(
+      `/api/analysis/${analysisId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log("2단계 분석 응답 성공:", response);
+    console.log("응답 데이터:", response.data);
+
+    // 백엔드 응답 구조에 따라 유연하게 처리
+    if (response.data.data) {
+      console.log("response.data.data 존재:", response.data.data);
+      return response.data.data;
+    } else if (response.data) {
+      console.log("response.data 직접 반환:", response.data);
+      return response.data as any;
+    }
+
+    throw new Error("예상하지 못한 응답 구조입니다.");
+  } catch (error: any) {
+    console.error("=== 2단계 분석 API 에러 ===");
+    console.error("에러:", error);
+    console.error("에러 응답:", error.response);
+    console.error("에러 응답 데이터:", error.response?.data);
+    console.error("에러 상태 코드:", error.response?.status);
+    console.error("에러 메시지:", error.response?.data?.message || error.message);
+
+    // FormData 내용 확인 (디버깅용)
+    console.error("전송한 FormData 확인:");
+    console.error("- 분석 ID:", analysisId);
+    console.error("- 추가 이미지 개수:", additionalInfo.additionalImages.length);
+    console.error("- 위치 정보:", additionalInfo.location);
+
+    throw error;
+  }
 };
 
 /**
