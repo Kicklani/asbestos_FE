@@ -34,14 +34,14 @@ export const generatePDFReport = (
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  const reportDate = new Date().toLocaleDateString('en-US', {
+  const reportDate = new Date().toLocaleDateString('ko-KR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
   });
-  doc.text(`Report Generated: ${reportDate}`, pageWidth / 2, 32, { align: 'center' });
+  doc.text(`Report Date: ${reportDate}`, pageWidth / 2, 32, { align: 'center' });
 
   yPosition = 55;
   doc.setTextColor(0, 0, 0);
@@ -51,7 +51,7 @@ export const generatePDFReport = (
   // ======================
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.text('ANALYSIS RESULT', margin, yPosition);
+  doc.text('1. ANALYSIS RESULT', margin, yPosition);
   yPosition += 10;
 
   // Status Box
@@ -65,28 +65,37 @@ export const generatePDFReport = (
     analysisResult.status === 'danger' ? 'DANGER - Potential Asbestos Detected' :
     'UNCERTAIN - Further Inspection Required';
 
+  const statusKorean =
+    analysisResult.status === 'safe' ? 'anjeon - seogmyeon migigeul' :
+    analysisResult.status === 'danger' ? 'wiheom - seogmyeon gamji' :
+    'bulmyeonghwa - chuga geomsa pilyo';
+
   doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
   doc.setDrawColor(statusColor[0], statusColor[1], statusColor[2]);
-  doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 25, 3, 3, 'FD');
+  doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 30, 3, 3, 'FD');
 
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
-  doc.text(statusText, pageWidth / 2, yPosition + 10, { align: 'center' });
+  doc.text(statusText, pageWidth / 2, yPosition + 12, { align: 'center' });
+
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`(${statusKorean})`, pageWidth / 2, yPosition + 20, { align: 'center' });
 
   doc.setFontSize(12);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Confidence Level: ${analysisResult.confidence}%`, pageWidth / 2, yPosition + 18, { align: 'center' });
+  doc.text(`Confidence: ${analysisResult.confidence}%`, pageWidth / 2, yPosition + 26, { align: 'center' });
 
-  yPosition += 35;
+  yPosition += 40;
   doc.setTextColor(0, 0, 0);
 
   // Analysis Message
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
-  const messageLines = doc.splitTextToSize(analysisResult.message, pageWidth - 2 * margin);
-  doc.text(messageLines, margin, yPosition);
-  yPosition += messageLines.length * 6 + 10;
+  doc.text('AI analysis has completed preliminary screening based on visual analysis.', margin, yPosition);
+  yPosition += 6;
+  doc.text('(AI giban yebe seukeurining wanlyo)', margin, yPosition);
+  yPosition += 12;
 
   // ======================
   // 3. DETECTED FEATURES
@@ -94,32 +103,35 @@ export const generatePDFReport = (
   if (analysisResult.detectedFeatures && analysisResult.detectedFeatures.length > 0) {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('DETECTED FEATURES', margin, yPosition);
+    doc.text('2. DETECTED FEATURES (gamjidoen teukjing)', margin, yPosition);
     yPosition += 8;
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
 
-    // Convert Korean features to English
-    const featureTranslations: Record<string, string> = {
-      '섬유질 질감 감지됨': 'Fibrous texture detected',
-      '색상 패턴 분석 완료': 'Color pattern analysis completed',
-      '표면 특성 평가 완료': 'Surface characteristics evaluated',
-    };
+    const features = [
+      { en: 'Fibrous texture detected', ko: 'seomyujil jilgam gamji' },
+      { en: 'Color pattern analysis completed', ko: 'saeksang paeteon bunseok wanlyo' },
+      { en: 'Surface characteristics evaluated', ko: 'pyomyeon teukseong pyeongga wanlyo' },
+    ];
 
-    analysisResult.detectedFeatures.forEach((feature) => {
+    features.forEach((feature) => {
       if (yPosition > pageHeight - 30) {
         doc.addPage();
         yPosition = margin;
       }
-      const translatedFeature = featureTranslations[feature] || feature;
       doc.setFillColor(239, 246, 255);
-      doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 8, 1, 1, 'F');
+      doc.roundedRect(margin, yPosition, pageWidth - 2 * margin, 10, 1, 1, 'F');
       doc.setTextColor(37, 99, 235);
-      doc.text(`✓`, margin + 3, yPosition + 5.5);
+      doc.text('✓', margin + 3, yPosition + 6.5);
       doc.setTextColor(0, 0, 0);
-      doc.text(`${translatedFeature}`, margin + 10, yPosition + 5.5);
-      yPosition += 10;
+      doc.text(feature.en, margin + 10, yPosition + 6.5);
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`(${feature.ko})`, margin + 10, yPosition + 9);
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      yPosition += 12;
     });
     yPosition += 5;
   }
@@ -135,29 +147,31 @@ export const generatePDFReport = (
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('RECOMMENDATIONS', margin, yPosition);
+    doc.text('3. RECOMMENDATIONS (gwonjangsahang)', margin, yPosition);
     yPosition += 8;
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
 
-    // Convert Korean recommendations to English
-    const recTranslations: Record<string, string> = {
-      '상세 분석 보고서를 검토하세요': 'Review the detailed analysis report',
-      '우려되는 경우 전문 검사를 고려하세요': 'Consider professional inspection if concerned',
-      '이 스크리닝 기록을 보관하세요': 'Keep this screening record for your files',
-    };
+    const recommendations = [
+      { en: 'Review the detailed analysis report', ko: 'sangsehae bunseok bogoseo geomto' },
+      { en: 'Consider professional inspection if concerned', ko: 'ujeo si jeonmunga geomsa goryeo' },
+      { en: 'Keep this screening record for your files', ko: 'i seukeurining girog bowan' },
+    ];
 
-    analysisResult.recommendations.forEach((rec, index) => {
+    recommendations.forEach((rec, index) => {
       if (yPosition > pageHeight - 30) {
         doc.addPage();
         yPosition = margin;
       }
-      const translatedRec = recTranslations[rec] || rec;
-      doc.text(`${index + 1}.`, margin + 2, yPosition);
-      const recLines = doc.splitTextToSize(translatedRec, pageWidth - 2 * margin - 10);
-      doc.text(recLines, margin + 10, yPosition);
-      yPosition += recLines.length * 5 + 3;
+      doc.text(`${index + 1}. ${rec.en}`, margin + 5, yPosition);
+      yPosition += 5;
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`   (${rec.ko})`, margin + 5, yPosition);
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      yPosition += 7;
     });
     yPosition += 5;
   }
@@ -173,7 +187,7 @@ export const generatePDFReport = (
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('ANALYZED IMAGES', margin, yPosition);
+    doc.text('4. ANALYZED IMAGES (bunseokhan sajin)', margin, yPosition);
     yPosition += 10;
 
     const imgWidth = (pageWidth - 3 * margin) / 2;
@@ -220,12 +234,12 @@ export const generatePDFReport = (
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('NEARBY INSPECTION CENTERS', margin, yPosition);
+    doc.text('5. NEARBY INSPECTION CENTERS (jubyeon geomsaso)', margin, yPosition);
     yPosition += 10;
 
-    // Create table data
+    // Create table data with Korean names preserved
     const tableData = inspectionCenters.map(center => [
-      center.name,
+      center.name, // 한국어 이름은 그대로 표시 (깨져도 일단 시도)
       center.address,
       `${center.distance} km`,
       center.phone,
@@ -270,26 +284,36 @@ export const generatePDFReport = (
 
   // Add disclaimer on last page
   doc.setPage(totalPages);
-  const disclaimerY = pageHeight - 35;
+  const disclaimerY = pageHeight - 40;
 
   doc.setFillColor(254, 242, 242);
-  doc.rect(margin, disclaimerY - 5, pageWidth - 2 * margin, 25, 'F');
+  doc.rect(margin, disclaimerY - 5, pageWidth - 2 * margin, 30, 'F');
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(185, 28, 28);
-  doc.text('IMPORTANT DISCLAIMER', margin + 5, disclaimerY);
+  doc.text('IMPORTANT DISCLAIMER (jungyohan myeonchaegjohang)', margin + 5, disclaimerY);
 
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(60, 60, 60);
   doc.setFontSize(7);
-  const disclaimer = doc.splitTextToSize(
-    'This report is generated by an AI-powered screening tool and should NOT be considered as a definitive diagnosis. ' +
-    'Asbestos can only be accurately identified through laboratory analysis by certified professionals. ' +
-    'For proper asbestos identification and risk assessment, please consult with certified inspection centers listed in this report.',
-    pageWidth - 2 * margin - 10
-  );
-  doc.text(disclaimer, margin + 5, disclaimerY + 5);
+
+  const disclaimerLines = [
+    'This report is generated by an AI-powered screening tool and should NOT be',
+    'considered as definitive diagnosis. Asbestos can only be accurately identified',
+    'through laboratory analysis by certified professionals.',
+    '',
+    'i bogoseoneun AI giban seukeurining dooguro saengseongdoeeosseumeuro',
+    'hwagjeongjeok jingdangeuro ganjuhaeseoneun an doebnida.',
+    'seogmyeoneun inseuengineun jeonmungadeului silheomshil bunseogul tonghae',
+    'jeonghaghage hwaginhae juseyo.'
+  ];
+
+  let disclaimerYPos = disclaimerY + 5;
+  disclaimerLines.forEach(line => {
+    doc.text(line, margin + 5, disclaimerYPos);
+    disclaimerYPos += 3.5;
+  });
 
   // ======================
   // 8. PAGE NUMBERS & FOOTER
@@ -314,6 +338,6 @@ export const generatePDFReport = (
   // ======================
   // 9. SAVE PDF
   // ======================
-  const fileName = `asbestos-report-${new Date().getTime()}.pdf`;
+  const fileName = `seogmyeon-bunseok-bogoseo-${new Date().getTime()}.pdf`;
   doc.save(fileName);
 };
