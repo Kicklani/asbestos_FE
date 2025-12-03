@@ -83,12 +83,21 @@ export const AnalysisPage: React.FC = () => {
       console.log("분석 결과 응답 키들:", apiResponse ? Object.keys(apiResponse) : "null");
 
       // 백엔드 응답 구조를 유연하게 처리
+      console.log("=== API 응답 분석 시작 ===");
+      console.log("apiResponse 전체:", apiResponse);
+      console.log("apiResponse 타입:", typeof apiResponse);
+      console.log("apiResponse 키들:", apiResponse ? Object.keys(apiResponse) : "null");
+      console.log("apiResponse.result 존재?:", (apiResponse as any).result !== undefined);
+
       // Case 1: apiResponse.result가 있는 경우
       // Case 2: apiResponse 자체가 result인 경우
       const resultData: any = (apiResponse as any).result || apiResponse;
 
+      console.log("=== resultData 추출 결과 ===");
       console.log("resultData:", resultData);
+      console.log("resultData 타입:", typeof resultData);
       console.log("resultData 키들:", resultData ? Object.keys(resultData) : "null");
+      console.log("resultData JSON:", JSON.stringify(resultData, null, 2));
 
       // status가 객체인 경우 문자열로 변환
       let statusValue = resultData.status ?? resultData.risk_level ?? "safe";
