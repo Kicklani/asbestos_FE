@@ -100,17 +100,24 @@ export const AnalysisPage: React.FC = () => {
       console.log("resultData JSON:", JSON.stringify(resultData, null, 2));
 
       // 백엔드 응답에서 위험도 추출
-      // ai_result.세그멘테이션_JSON에서 값이 1인 키를 찾아서 위험도 결정
+      // ai_result.세그멘테이션_JSON에서 가장 큰 값을 가진 키로 위험도 결정
       let statusValue: "safe" | "danger" | "uncertain" = "safe"; // 기본값
 
       if (resultData.ai_result && resultData.ai_result.세그멘테이션_JSON) {
         const segmentation = resultData.ai_result.세그멘테이션_JSON;
 
-        if (segmentation.high_risk === 1) {
+        const lowRisk = segmentation.low_risk ?? 0;
+        const mediumRisk = segmentation.medium_risk ?? 0;
+        const highRisk = segmentation.high_risk ?? 0;
+
+        // 가장 큰 값을 찾아서 위험도 결정
+        const maxValue = Math.max(lowRisk, mediumRisk, highRisk);
+
+        if (maxValue === highRisk && highRisk > 0) {
           statusValue = "danger"; // 고위험 → 빨간색
-        } else if (segmentation.medium_risk === 1) {
+        } else if (maxValue === mediumRisk && mediumRisk > 0) {
           statusValue = "uncertain"; // 중위험 → 노란색
-        } else if (segmentation.low_risk === 1) {
+        } else if (maxValue === lowRisk && lowRisk > 0) {
           statusValue = "safe"; // 저위험 → 초록색
         }
       }
@@ -118,6 +125,14 @@ export const AnalysisPage: React.FC = () => {
       console.log("status 변환:", {
         ai_result: resultData.ai_result,
         세그멘테이션_JSON: resultData.ai_result?.세그멘테이션_JSON,
+        low_risk: resultData.ai_result?.세그멘테이션_JSON?.low_risk,
+        medium_risk: resultData.ai_result?.세그멘테이션_JSON?.medium_risk,
+        high_risk: resultData.ai_result?.세그멘테이션_JSON?.high_risk,
+        최대값: Math.max(
+          resultData.ai_result?.세그멘테이션_JSON?.low_risk ?? 0,
+          resultData.ai_result?.세그멘테이션_JSON?.medium_risk ?? 0,
+          resultData.ai_result?.세그멘테이션_JSON?.high_risk ?? 0
+        ),
         변환결과: statusValue
       });
 
