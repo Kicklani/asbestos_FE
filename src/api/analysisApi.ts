@@ -32,8 +32,22 @@ export const analyzeImage = async (imageFile: File): Promise<AnalysisApiResponse
 
     console.log("API 응답 성공:", response);
     console.log("응답 데이터:", response.data);
+    console.log("응답 데이터 타입:", typeof response.data);
+    console.log("응답 데이터 키들:", Object.keys(response.data));
 
-    return response.data.data;
+    // 백엔드 응답 구조에 따라 유연하게 처리
+    // Case 1: {data: {result: ...}} 구조
+    if (response.data.data) {
+      console.log("response.data.data 존재:", response.data.data);
+      return response.data.data;
+    }
+    // Case 2: {result: ...} 구조 (백엔드가 직접 result를 반환)
+    else if (response.data) {
+      console.log("response.data 직접 반환:", response.data);
+      return response.data as any;
+    }
+
+    throw new Error("예상하지 못한 응답 구조입니다.");
   } catch (error: any) {
     console.error("=== analyzeImage API 에러 ===");
     console.error("에러:", error);

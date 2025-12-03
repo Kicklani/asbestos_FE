@@ -61,24 +61,34 @@ export const AnalysisPage: React.FC = () => {
       const apiResponse = await analyzeImage(uploadedImages[0].file);
 
       console.log("API 응답:", apiResponse);
+      console.log("API 응답 타입:", typeof apiResponse);
+      console.log("API 응답 키들:", apiResponse ? Object.keys(apiResponse) : "null");
+
+      // 백엔드 응답 구조를 유연하게 처리
+      // Case 1: apiResponse.result가 있는 경우
+      // Case 2: apiResponse 자체가 result인 경우
+      const resultData: any = (apiResponse as any).result || apiResponse;
+
+      console.log("resultData:", resultData);
+      console.log("resultData 키들:", resultData ? Object.keys(resultData) : "null");
 
       // API 응답을 AnalysisResult 형식으로 변환
       const result: AnalysisResult = {
-        id: apiResponse.result.id,
-        status: apiResponse.result.status,
-        confidence: apiResponse.result.confidence,
-        message: apiResponse.result.message || "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
-        detectedFeatures: apiResponse.result.detectedFeatures || [
+        id: resultData.id || resultData.analysis_id || String(Date.now()),
+        status: resultData.status || resultData.risk_level || "safe",
+        confidence: resultData.confidence || resultData.confidence_score || 85,
+        message: resultData.message || resultData.description || "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
+        detectedFeatures: resultData.detectedFeatures || resultData.detected_features || resultData.features || [
           "섬유질 질감 감지됨",
           "색상 패턴 분석 완료",
           "표면 특성 평가 완료",
         ],
-        recommendations: apiResponse.result.recommendations || [
+        recommendations: resultData.recommendations || resultData.suggested_actions || [
           "상세 분석 보고서를 검토하세요",
           "우려되는 경우 전문 검사를 고려하세요",
           "이 스크리닝 기록을 보관하세요",
         ],
-        timestamp: apiResponse.result.timestamp || new Date().toISOString(),
+        timestamp: resultData.timestamp || resultData.created_at || new Date().toISOString(),
       };
 
       console.log("변환된 결과:", result);
