@@ -116,6 +116,11 @@ export const AnalysisPage: React.FC = () => {
       // 검사소 목록은 하드코딩된 데이터 사용 (API 호출 안함)
       setInspectionCentersWithMockData();
 
+      console.log("=== 상태 변경 완료 ===");
+      console.log("analysisResult 설정됨:", result);
+      console.log("inspectionCenters 설정 완료");
+      console.log("currentStep을 'result'로 변경");
+
       setCurrentStep("result");
     } catch (err: any) {
       console.error("=== 분석 에러 발생 ===");
@@ -638,14 +643,49 @@ export const AnalysisPage: React.FC = () => {
             )}
 
             {/* Result Step */}
-            {currentStep === "result" && analysisResult && (
-              <AnalysisResultComponent
-                result={analysisResult}
-                onContinue={handleContinueFromResult}
-                onReset={handleReset}
-                uploadedImages={uploadedImages.map(img => img.preview)}
-                inspectionCenters={inspectionCenters}
-              />
+            {currentStep === "result" && (
+              <>
+                {console.log("=== 렌더링 단계 ===")}
+                {console.log("currentStep:", currentStep)}
+                {console.log("analysisResult:", analysisResult)}
+                {console.log("analysisResult이 null인가?:", analysisResult === null)}
+                {analysisResult ? (
+                  <AnalysisResultComponent
+                    result={analysisResult}
+                    onContinue={handleContinueFromResult}
+                    onReset={handleReset}
+                    uploadedImages={uploadedImages.map(img => img.preview)}
+                    inspectionCenters={inspectionCenters}
+                  />
+                ) : (
+                  <div style={{
+                    background: "white",
+                    borderRadius: "20px",
+                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                    padding: "48px",
+                    textAlign: "center",
+                  }}>
+                    <p style={{ color: "#dc2626", fontWeight: "600" }}>
+                      분석 결과를 불러올 수 없습니다. 다시 시도해주세요.
+                    </p>
+                    <button
+                      onClick={handleReset}
+                      style={{
+                        marginTop: "20px",
+                        background: "#2563eb",
+                        color: "white",
+                        padding: "12px 24px",
+                        borderRadius: "8px",
+                        border: "none",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                      }}
+                    >
+                      다시 시작
+                    </button>
+                  </div>
+                )}
+              </>
             )}
 
             {/* Additional Info Step */}
