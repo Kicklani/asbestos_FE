@@ -12,7 +12,7 @@ import {
   AdditionalInfo,
   InspectionCenter,
 } from "@/types";
-import { analyzeImage, submitAdditionalInfo, getInspectionCenters } from "@/api/analysisApi";
+import { analyzeImage, submitAdditionalInfo, getInspectionCenters, getAnalysisById } from "@/api/analysisApi";
 
 type Step = "upload" | "result" | "additional-info" | "inspection-centers";
 
@@ -57,12 +57,30 @@ export const AnalysisPage: React.FC = () => {
       console.log("파일 크기:", uploadedImages[0].file.size);
       console.log("파일 타입:", uploadedImages[0].file.type);
 
-      // 실제 API 호출
-      const apiResponse = await analyzeImage(uploadedImages[0].file);
+      // Step 1: 이미지 업로드 - analysis_id 받기
+      const uploadResponse = await analyzeImage(uploadedImages[0].file);
 
-      console.log("API 응답:", apiResponse);
-      console.log("API 응답 타입:", typeof apiResponse);
-      console.log("API 응답 키들:", apiResponse ? Object.keys(apiResponse) : "null");
+      console.log("업로드 응답:", uploadResponse);
+      console.log("업로드 응답 타입:", typeof uploadResponse);
+      console.log("업로드 응답 키들:", uploadResponse ? Object.keys(uploadResponse) : "null");
+
+      // analysis_id 추출
+      const analysisId = (uploadResponse as any).analysis_id ||
+                        (uploadResponse as any).id ||
+                        ((uploadResponse as any).result && (uploadResponse as any).result.analysis_id);
+
+      if (!analysisId) {
+        throw new Error("분석 ID를 받지 못했습니다.");
+      }
+
+      console.log("분석 ID:", analysisId);
+
+      // Step 2: 분석 ID로 결과 조회
+      const apiResponse = await getAnalysisById(analysisId);
+
+      console.log("분석 결과 조회 응답:", apiResponse);
+      console.log("분석 결과 응답 타입:", typeof apiResponse);
+      console.log("분석 결과 응답 키들:", apiResponse ? Object.keys(apiResponse) : "null");
 
       // 백엔드 응답 구조를 유연하게 처리
       // Case 1: apiResponse.result가 있는 경우

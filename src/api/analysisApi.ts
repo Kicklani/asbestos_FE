@@ -127,8 +127,34 @@ export const getAnalysisHistory = async () => {
  * Get specific analysis result by ID
  */
 export const getAnalysisById = async (analysisId: string) => {
-  const response = await client.get(`/api/analysis/${analysisId}`);
-  return response.data.data;
+  console.log("=== getAnalysisById 함수 호출 ===");
+  console.log("분석 ID:", analysisId);
+  console.log("요청 URL:", `/api/analysis/${analysisId}`);
+
+  try {
+    const response = await client.get(`/api/analysis/${analysisId}`);
+
+    console.log("분석 결과 조회 성공:", response);
+    console.log("응답 데이터:", response.data);
+    console.log("응답 데이터 타입:", typeof response.data);
+    console.log("응답 데이터 키들:", Object.keys(response.data));
+
+    // 백엔드 응답 구조에 따라 유연하게 처리
+    if (response.data.data) {
+      console.log("response.data.data 존재:", response.data.data);
+      return response.data.data;
+    } else if (response.data) {
+      console.log("response.data 직접 반환:", response.data);
+      return response.data as any;
+    }
+
+    throw new Error("예상하지 못한 응답 구조입니다.");
+  } catch (error: any) {
+    console.error("=== getAnalysisById API 에러 ===");
+    console.error("에러:", error);
+    console.error("에러 응답:", error.response);
+    throw error;
+  }
 };
 
 /**
