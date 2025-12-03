@@ -25,6 +25,7 @@ export const AnalysisPage: React.FC = () => {
   const [inspectionCenters, setInspectionCenters] = useState<
     InspectionCenter[]
   >([]);
+  const [inspectionReason, setInspectionReason] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("이미지를 분석하고 있습니다...");
   const [error, setError] = useState<string | null>(null);
@@ -316,6 +317,11 @@ export const AnalysisPage: React.FC = () => {
       console.log("업데이트된 분석 결과:", updatedResult);
 
       setAnalysisResult(updatedResult);
+
+      // API 응답에서 reason 추출
+      const reason = resultData.reason ?? (apiResponse as any).reason ?? null;
+      console.log("검사소 추천 이유:", reason);
+      setInspectionReason(reason);
 
       if (updatedResult.status === "danger" || updatedResult.status === "safe") {
         handleFetchInspectionCenters();
@@ -770,6 +776,64 @@ export const AnalysisPage: React.FC = () => {
             {/* Inspection Centers Step */}
             {currentStep === "inspection-centers" && (
               <div>
+                {/* Inspection Reason */}
+                {inspectionReason && (
+                  <div
+                    style={{
+                      background: "#fef3c7",
+                      border: "2px solid #f59e0b",
+                      borderRadius: "16px",
+                      padding: "24px",
+                      marginBottom: "32px",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          background: "#f59e0b",
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "18px",
+                        }}
+                      >
+                        ⚠️
+                      </div>
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          color: "#92400e",
+                        }}
+                      >
+                        검사소 방문 권장 사유
+                      </h3>
+                    </div>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "16px",
+                        lineHeight: "1.6",
+                        color: "#78350f",
+                      }}
+                    >
+                      {inspectionReason}
+                    </p>
+                  </div>
+                )}
+
                 <InspectionCenterList centers={inspectionCenters} />
                 <div style={{ marginTop: "32px", textAlign: "center" }}>
                   <button
