@@ -99,36 +99,77 @@ export const AnalysisPage: React.FC = () => {
       console.log("resultData 키들:", resultData ? Object.keys(resultData) : "null");
       console.log("resultData JSON:", JSON.stringify(resultData, null, 2));
 
-      // status가 객체인 경우 문자열로 변환
-      let statusValue = resultData.status ?? resultData.risk_level ?? "safe";
-      if (typeof statusValue === 'object' && statusValue !== null) {
-        // status가 객체인 경우, level이나 value 속성을 확인
-        statusValue = statusValue.level ?? statusValue.value ?? statusValue.status ?? "safe";
+      // 백엔드 응답에서 위험도 추출
+      // ai_result.세그멘테이션_JSON에서 값이 1인 키를 찾아서 위험도 결정
+      let statusValue: "safe" | "danger" | "uncertain" = "safe"; // 기본값
+
+      if (resultData.ai_result && resultData.ai_result.세그멘테이션_JSON) {
+        const segmentation = resultData.ai_result.세그멘테이션_JSON;
+
+        if (segmentation.high_risk === 1) {
+          statusValue = "danger"; // 고위험 → 빨간색
+        } else if (segmentation.medium_risk === 1) {
+          statusValue = "uncertain"; // 중위험 → 노란색
+        } else if (segmentation.low_risk === 1) {
+          statusValue = "safe"; // 저위험 → 초록색
+        }
       }
 
       console.log("status 변환:", {
-        원본: resultData.status,
-        risk_level: resultData.risk_level,
+        ai_result: resultData.ai_result,
+        세그멘테이션_JSON: resultData.ai_result?.세그멘테이션_JSON,
         변환결과: statusValue
       });
 
+      // 백엔드 응답 구조에 맞게 필드 추출
+      const resultId = resultData.ID ?? resultData.id ?? String(Date.now());
+
+      // 탐지 점수를 confidence로 변환 (0-1 → 0-100)
+      const detectionScore = resultData.ai_result?.탐지_점수 ?? 0;
+      const confidence = Math.round(detectionScore * 100);
+
+      // status에 따른 메시지 생성
+      const statusMessage = resultData.status?.코드_명칭 ?? "분석 완료";
+      let detailedMessage = "";
+
+      if (statusValue === "danger") {
+        detailedMessage = "높은 위험도가 감지되었습니다. 전문가의 정밀 검사가 필요합니다.";
+      } else if (statusValue === "uncertain") {
+        detailedMessage = "중간 위험도가 감지되었습니다. 추가 검사를 권장합니다.";
+      } else {
+        detailedMessage = "낮은 위험도입니다. 그러나 의심스러운 경우 전문가 확인을 권장합니다.";
+      }
+
       // API 응답을 AnalysisResult 형식으로 변환
-      // undefined/null 체크만 하고, 빈 배열이나 빈 문자열도 유효한 값으로 처리
       const result: AnalysisResult = {
-        id: resultData.id ?? resultData.analysis_id ?? String(Date.now()),
+        id: resultId,
         status: statusValue,
-        confidence: resultData.confidence ?? resultData.confidence_score ?? 85,
-        message: resultData.message ?? resultData.description ?? "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
+        confidence: confidence,
+        message: `${statusMessage} - ${detailedMessage}`,
         detectedFeatures: resultData.detectedFeatures ?? resultData.detected_features ?? resultData.features ?? [
-          "섬유질 질감 감지됨",
-          "색상 패턴 분석 완료",
-          "표면 특성 평가 완료",
+          `탐지 점수: ${detectionScore.toFixed(2)}`,
+          `분석 상태: ${resultData.status?.코드 ?? "UNKNOWN"}`,
+          "AI 기반 이미지 분석 완료",
         ],
-        recommendations: resultData.recommendations ?? resultData.suggested_actions ?? [
-          "상세 분석 보고서를 검토하세요",
-          "우려되는 경우 전문 검사를 고려하세요",
-          "이 스크리닝 기록을 보관하세요",
-        ],
+        recommendations: resultData.recommendations ?? resultData.suggested_actions ??
+          (statusValue === "danger"
+            ? [
+                "즉시 전문 검사기관에 정밀 검사를 의뢰하세요",
+                "해당 구역의 출입을 제한하세요",
+                "전문가의 안전 조치를 받으세요",
+              ]
+            : statusValue === "uncertain"
+            ? [
+                "추가 검사를 통해 정확한 판단을 받으세요",
+                "전문 검사기관에 문의하세요",
+                "안전을 위해 주의를 기울이세요",
+              ]
+            : [
+                "정기적인 점검을 권장합니다",
+                "의심스러운 경우 전문가 확인을 받으세요",
+                "이 분석 기록을 보관하세요",
+              ]
+          ),
         timestamp: resultData.timestamp ?? resultData.created_at ?? new Date().toISOString(),
       };
 
