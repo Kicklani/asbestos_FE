@@ -20,14 +20,62 @@ export interface TokenResponse {
 export const authApi = {
   // 회원가입
   signup: async (data: SignupRequest) => {
-    const response = await client.post('/api/auth/signup', data);
-    return response.data;
+    console.log("=== 회원가입 요청 ===");
+    console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
+    console.log("요청 URL:", '/auth/signup');
+    console.log("전체 URL:", `${import.meta.env.VITE_API_BASE_URL}/auth/signup`);
+    console.log("요청 데이터:", data);
+    try {
+      const response = await client.post('/auth/signup', data);
+      console.log("회원가입 성공:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("=== 회원가입 에러 ===");
+      console.error("에러 타입:", error.constructor.name);
+      console.error("에러 메시지:", error.message);
+      console.error("전체 에러:", error);
+      console.error("에러 응답:", error.response);
+      console.error("에러 요청:", error.request);
+      console.error("에러 코드:", error.code);
+
+      // 네트워크 에러인지 확인
+      if (!error.response && error.request) {
+        console.error("네트워크 에러: 서버로부터 응답이 없습니다");
+        console.error("이것은 CORS 문제일 가능성이 높습니다");
+      }
+
+      throw error;
+    }
   },
 
   // 로그인
   login: async (data: LoginRequest): Promise<TokenResponse> => {
-    const response = await client.post('/api/auth/login', data);
-    return response.data;
+    console.log("=== 로그인 요청 ===");
+    console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
+    console.log("요청 URL:", '/auth/login');
+    console.log("전체 URL:", `${import.meta.env.VITE_API_BASE_URL}/auth/login`);
+    console.log("요청 데이터:", { email: data.email, password: '***' });
+    try {
+      const response = await client.post('/auth/login', data);
+      console.log("로그인 성공:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("=== 로그인 에러 ===");
+      console.error("에러 타입:", error.constructor.name);
+      console.error("에러 메시지:", error.message);
+      console.error("전체 에러:", error);
+      console.error("에러 응답:", error.response);
+      console.error("에러 요청:", error.request);
+      console.error("에러 코드:", error.code);
+
+      // 네트워크 에러인지 확인
+      if (!error.response && error.request) {
+        console.error("네트워크 에러: 서버로부터 응답이 없습니다");
+        console.error("이것은 CORS 문제일 가능성이 높습니다");
+      }
+
+      throw error;
+    }
   },
 
   // 토큰 갱신

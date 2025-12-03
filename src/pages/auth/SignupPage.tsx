@@ -46,14 +46,21 @@ export const SignupPage: React.FC = () => {
 
     setIsLoading(true);
     try {
+      console.log("회원가입 폼 제출:", formData);
       await authApi.signup(formData);
       alert('회원가입이 완료되었습니다!');
       navigate('/login');
     } catch (error: any) {
+      console.error("회원가입 에러:", error);
+      console.error("에러 응답:", error.response);
+
       if (error.response?.status === 409) {
         setErrors({ email: '이미 가입된 이메일입니다' });
+      } else if (error.message && error.message.includes('Network Error')) {
+        alert('서버 연결에 실패했습니다. CORS 설정을 확인해주세요.');
       } else {
-        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+        const errorMsg = error.response?.data?.detail || error.response?.data?.message || '회원가입에 실패했습니다. 다시 시도해주세요.';
+        alert(errorMsg);
       }
     } finally {
       setIsLoading(false);
