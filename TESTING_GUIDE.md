@@ -36,14 +36,14 @@
 ```
 === 회원가입 요청 ===
 Base URL: https://asbestosbe-production.up.railway.app
-요청 URL: /auth/signup
-전체 URL: https://asbestosbe-production.up.railway.app/auth/signup
+요청 URL: /api/auth/signup
+전체 URL: https://asbestosbe-production.up.railway.app/api/auth/signup
 요청 데이터: {email: "test@example.com", password: "password123", name: "테스트유저"}
 회원가입 성공: {access_token: "...", refresh_token: "...", ...}
 ```
 
 **Network에서 확인**:
-- Request: `POST /auth/signup`
+- Request: `POST /api/auth/signup`
 - Status: `200 OK` 또는 `201 Created`
 - Response Headers에 `Access-Control-Allow-Origin: http://localhost:3000` 포함
 
@@ -67,14 +67,14 @@ Base URL: https://asbestosbe-production.up.railway.app
 ```
 === 로그인 요청 ===
 Base URL: https://asbestosbe-production.up.railway.app
-요청 URL: /auth/login
-전체 URL: https://asbestosbe-production.up.railway.app/auth/login
+요청 URL: /api/auth/login
+전체 URL: https://asbestosbe-production.up.railway.app/api/auth/login
 요청 데이터: {email: "test@example.com", password: "***"}
 로그인 성공: {access_token: "...", refresh_token: "...", token_type: "bearer"}
 ```
 
 **Network에서 확인**:
-- Request: `POST /auth/login`
+- Request: `POST /api/auth/login`
 - Status: `200 OK`
 - Response: JWT 토큰 포함
 
@@ -119,14 +119,14 @@ Base URL: https://asbestosbe-production.up.railway.app
 === analyzeImage 함수 호출 ===
 파일: File {name: "example.jpg", size: 123456, type: "image/jpeg"}
 FormData 생성 완료
-요청 URL: /analysis/upload
+요청 URL: /api/analysis/upload
 
 API 응답 성공: {data: {...}, status: 200}
 응답 데이터: {result: {...}}
 ```
 
 **Network에서 확인**:
-- Request: `POST /analysis/upload`
+- Request: `POST /api/analysis/upload`
 - Request Headers:
   - `Authorization: Bearer <access_token>`
   - `Content-Type: multipart/form-data`
@@ -153,7 +153,7 @@ API 응답 성공: {data: {...}, status: 200}
 5. 더 상세한 분석 결과 표시
 
 **Network에서 확인**:
-- Request: `POST /analysis/additional-info`
+- Request: `POST /api/analysis/additional-info`
 - Request Headers: `Authorization: Bearer <access_token>`
 - Status: `200 OK`
 
@@ -180,7 +180,7 @@ API 응답 성공: {data: {...}, status: 200}
 ```
 
 **Network에서 확인**:
-- Request: `GET /inspection-centers?lat=35.1551&lng=128.0989`
+- Request: `GET /api/inspection-centers?lat=35.1551&lng=128.0989`
 - Status: `200 OK`
 
 ---
@@ -214,7 +214,7 @@ API 응답 성공: {data: {...}, status: 200}
 2. 각 항목 클릭 시 상세 결과 보기
 
 **Network에서 확인**:
-- Request: `GET /analysis/history`
+- Request: `GET /api/analysis/history`
 - Request Headers: `Authorization: Bearer <access_token>`
 - Status: `200 OK`
 
@@ -323,7 +323,7 @@ API 응답 성공: {data: {...}, status: 200}
 ### Postman으로 API 직접 테스트:
 
 ```
-POST https://asbestosbe-production.up.railway.app/auth/signup
+POST https://asbestosbe-production.up.railway.app/api/auth/signup
 Content-Type: application/json
 
 {
@@ -341,7 +341,7 @@ curl -H "Origin: http://localhost:3000" \
      -H "Access-Control-Request-Headers: Content-Type,Authorization" \
      -X OPTIONS \
      --verbose \
-     https://asbestosbe-production.up.railway.app/auth/signup
+     https://asbestosbe-production.up.railway.app/api/auth/signup
 ```
 
 ---

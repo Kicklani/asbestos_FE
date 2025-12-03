@@ -22,11 +22,11 @@ export const authApi = {
   signup: async (data: SignupRequest) => {
     console.log("=== 회원가입 요청 ===");
     console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
-    console.log("요청 URL:", '/auth/signup');
-    console.log("전체 URL:", `${import.meta.env.VITE_API_BASE_URL}/auth/signup`);
+    console.log("요청 URL:", '/api/auth/signup');
+    console.log("전체 URL:", `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`);
     console.log("요청 데이터:", data);
     try {
-      const response = await client.post('/auth/signup', data);
+      const response = await client.post('/api/auth/signup', data);
       console.log("회원가입 성공:", response.data);
       return response.data;
     } catch (error: any) {
@@ -52,11 +52,11 @@ export const authApi = {
   login: async (data: LoginRequest): Promise<TokenResponse> => {
     console.log("=== 로그인 요청 ===");
     console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
-    console.log("요청 URL:", '/auth/login');
-    console.log("전체 URL:", `${import.meta.env.VITE_API_BASE_URL}/auth/login`);
+    console.log("요청 URL:", '/api/auth/login');
+    console.log("전체 URL:", `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`);
     console.log("요청 데이터:", { email: data.email, password: '***' });
     try {
-      const response = await client.post('/auth/login', data);
+      const response = await client.post('/api/auth/login', data);
       console.log("로그인 성공:", response.data);
       return response.data;
     } catch (error: any) {
