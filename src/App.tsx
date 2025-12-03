@@ -6,8 +6,10 @@ import { LoginPage } from '@/pages/auth/LoginPage';
 import { SignupPage } from '@/pages/auth/SignupPage';
 
 export const App: React.FC = () => {
+  const basename = import.meta.env.VITE_PUBLIC_URL || '/';
+
   return (
-    <BrowserRouter basename="/asbestos_FE">
+    <BrowserRouter basename={basename}>
       <Routes>
         {/* 인증 페이지 (레이아웃 없음) */}
         <Route path="/login" element={<LoginPage />} />
