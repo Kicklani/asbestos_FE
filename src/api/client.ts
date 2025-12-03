@@ -10,6 +10,11 @@ const client: AxiosInstance = axios.create({
   },
 });
 
+// 설정 확인을 위한 로그
+console.log("=== API Client 설정 ===");
+console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
+console.log("Timeout:", 30000);
+
 // Request interceptor - Access Token 자동 추가
 client.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {

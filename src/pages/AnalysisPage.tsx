@@ -12,6 +12,7 @@ import {
   AdditionalInfo,
   InspectionCenter,
 } from "@/types";
+import { analyzeImage, submitAdditionalInfo, getInspectionCenters } from "@/api/analysisApi";
 
 type Step = "upload" | "result" | "additional-info" | "inspection-centers";
 
@@ -50,41 +51,73 @@ export const AnalysisPage: React.FC = () => {
     setError(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("=== 이미지 분석 시작 ===");
+      console.log("업로드된 이미지:", uploadedImages[0].file);
+      console.log("파일 이름:", uploadedImages[0].file.name);
+      console.log("파일 크기:", uploadedImages[0].file.size);
+      console.log("파일 타입:", uploadedImages[0].file.type);
 
-      const mockResult: AnalysisResult = {
-        id: `analysis-${Date.now()}`,
-        status:
-          Math.random() > 0.7
-            ? "safe"
-            : Math.random() > 0.5
-            ? "uncertain"
-            : "danger",
-        confidence: Math.floor(Math.random() * 30) + 70,
-        message:
-          "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
-        detectedFeatures: [
+      // 실제 API 호출
+      const apiResponse = await analyzeImage(uploadedImages[0].file);
+
+      console.log("API 응답:", apiResponse);
+
+      // API 응답을 AnalysisResult 형식으로 변환
+      const result: AnalysisResult = {
+        id: apiResponse.result.id,
+        status: apiResponse.result.status,
+        confidence: apiResponse.result.confidence,
+        message: apiResponse.result.message || "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
+        detectedFeatures: apiResponse.result.detectedFeatures || [
           "섬유질 질감 감지됨",
           "색상 패턴 분석 완료",
           "표면 특성 평가 완료",
         ],
-        recommendations: [
+        recommendations: apiResponse.result.recommendations || [
           "상세 분석 보고서를 검토하세요",
           "우려되는 경우 전문 검사를 고려하세요",
           "이 스크리닝 기록을 보관하세요",
         ],
-        timestamp: new Date().toISOString(),
+        timestamp: apiResponse.result.timestamp || new Date().toISOString(),
       };
 
-      setAnalysisResult(mockResult);
+      console.log("변환된 결과:", result);
+
+      setAnalysisResult(result);
 
       // 분석 완료 후 검사소 목록도 미리 가져오기
       await fetchInspectionCentersData();
 
       setCurrentStep("result");
-    } catch (err) {
-      setError("분석에 실패했습니다. 다시 시도해주세요.");
-      console.error(err);
+    } catch (err: any) {
+      console.error("=== 분석 에러 발생 ===");
+      console.error("전체 에러 객체:", err);
+      console.error("에러 응답:", err.response);
+      console.error("에러 응답 데이터:", err.response?.data);
+      console.error("에러 상태 코드:", err.response?.status);
+      console.error("에러 메시지:", err.message);
+      console.error("에러 스택:", err.stack);
+
+      let errorMessage = "분석에 실패했습니다. 다시 시도해주세요.";
+
+      // CORS 에러 체크
+      if (err.message && err.message.includes('Network Error')) {
+        errorMessage = "서버 연결에 실패했습니다. CORS 설정을 확인해주세요.";
+      }
+      // 401 Unauthorized - 로그인 필요
+      else if (err.response?.status === 401) {
+        errorMessage = "로그인이 필요한 서비스입니다. 먼저 로그인해주세요.";
+      }
+      // 403 Forbidden
+      else if (err.response?.status === 403) {
+        errorMessage = "접근 권한이 없습니다.";
+      }
+      // 기타 에러
+      else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +125,75 @@ export const AnalysisPage: React.FC = () => {
 
   const fetchInspectionCentersData = async () => {
     try {
-      // 경상국립대학교 가좌캠퍼스 기준 가까운 검사소 5곳
+      // 실제 API 호출 (경상국립대학교 가좌캠퍼스 좌표: 35.1551, 128.0989)
+      const apiResponse = await getInspectionCenters(35.1551, 128.0989);
+
+      if (apiResponse.centers && apiResponse.centers.length > 0) {
+        setInspectionCenters(apiResponse.centers);
+      } else {
+        // API에서 데이터가 없으면 기본 검사소 사용
+        const mockCenters: InspectionCenter[] = [
+          {
+            id: "1",
+            name: "진주보건환경연구원",
+            address: "경남 진주시 동진로 169",
+            distance: 3.2,
+            estimatedCost: { min: 150000, max: 300000 },
+            inspectionTime: "3-5 영업일",
+            rating: 4.7,
+            phone: "055-749-5900",
+            certified: true,
+          },
+          {
+            id: "2",
+            name: "경남환경연구원",
+            address: "경남 진주시 칠암동 951-7",
+            distance: 4.5,
+            estimatedCost: { min: 180000, max: 350000 },
+            inspectionTime: "2-4 영업일",
+            rating: 4.8,
+            phone: "055-754-8801",
+            certified: true,
+          },
+          {
+            id: "3",
+            name: "한국환경공단 경남지사",
+            address: "경남 창원시 성산구 중앙대로 151",
+            distance: 28.5,
+            estimatedCost: { min: 200000, max: 400000 },
+            inspectionTime: "3-5 영업일",
+            rating: 4.6,
+            phone: "055-269-0500",
+            certified: true,
+          },
+          {
+            id: "4",
+            name: "㈜케이씨엘",
+            address: "경남 진주시 문산읍 삼곡리 333-1",
+            distance: 12.8,
+            estimatedCost: { min: 170000, max: 320000 },
+            inspectionTime: "2-3 영업일",
+            rating: 4.5,
+            phone: "055-761-5400",
+            certified: true,
+          },
+          {
+            id: "5",
+            name: "부산시보건환경연구원",
+            address: "부산광역시 북구 덕천동 363-14",
+            distance: 65.3,
+            estimatedCost: { min: 160000, max: 310000 },
+            inspectionTime: "4-6 영업일",
+            rating: 4.7,
+            phone: "051-309-2800",
+            certified: true,
+          },
+        ];
+        setInspectionCenters(mockCenters);
+      }
+    } catch (err) {
+      console.error("Failed to fetch inspection centers:", err);
+      // API 호출 실패 시 기본 검사소 사용
       const mockCenters: InspectionCenter[] = [
         {
           id: "1",
@@ -116,44 +217,8 @@ export const AnalysisPage: React.FC = () => {
           phone: "055-754-8801",
           certified: true,
         },
-        {
-          id: "3",
-          name: "한국환경공단 경남지사",
-          address: "경남 창원시 성산구 중앙대로 151",
-          distance: 28.5,
-          estimatedCost: { min: 200000, max: 400000 },
-          inspectionTime: "3-5 영업일",
-          rating: 4.6,
-          phone: "055-269-0500",
-          certified: true,
-        },
-        {
-          id: "4",
-          name: "㈜케이씨엘",
-          address: "경남 진주시 문산읍 삼곡리 333-1",
-          distance: 12.8,
-          estimatedCost: { min: 170000, max: 320000 },
-          inspectionTime: "2-3 영업일",
-          rating: 4.5,
-          phone: "055-761-5400",
-          certified: true,
-        },
-        {
-          id: "5",
-          name: "부산시보건환경연구원",
-          address: "부산광역시 북구 덕천동 363-14",
-          distance: 65.3,
-          estimatedCost: { min: 160000, max: 310000 },
-          inspectionTime: "4-6 영업일",
-          rating: 4.7,
-          phone: "051-309-2800",
-          certified: true,
-        },
       ];
-
       setInspectionCenters(mockCenters);
-    } catch (err) {
-      console.error("Failed to fetch inspection centers:", err);
     }
   };
 
@@ -166,32 +231,35 @@ export const AnalysisPage: React.FC = () => {
     }
   };
 
-  const handleAdditionalInfoSubmit = async (_info: AdditionalInfo) => {
+  const handleAdditionalInfoSubmit = async (info: AdditionalInfo) => {
     setIsLoading(true);
     setLoadingMessage("추가 정보를 분석하고 있습니다...");
     setError(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // 실제 API 호출
+      const apiResponse = await submitAdditionalInfo(analysisResult!.id, info);
 
       const updatedResult: AnalysisResult = {
-        ...analysisResult!,
-        status: Math.random() > 0.5 ? "safe" : "danger",
-        confidence: Math.floor(Math.random() * 20) + 80,
-        message: "추가 정보를 바탕으로 보다 상세한 분석을 완료했습니다.",
-        timestamp: new Date().toISOString(),
+        id: apiResponse.result.id,
+        status: apiResponse.result.status,
+        confidence: apiResponse.result.confidence,
+        message: apiResponse.result.message || "추가 정보를 바탕으로 보다 상세한 분석을 완료했습니다.",
+        detectedFeatures: apiResponse.result.detectedFeatures || analysisResult!.detectedFeatures,
+        recommendations: apiResponse.result.recommendations || analysisResult!.recommendations,
+        timestamp: apiResponse.result.timestamp || new Date().toISOString(),
       };
 
       setAnalysisResult(updatedResult);
 
-      if (updatedResult.status === "danger") {
+      if (updatedResult.status === "danger" || updatedResult.status === "safe") {
         handleFetchInspectionCenters();
       } else {
         setCurrentStep("result");
       }
-    } catch (err) {
-      setError("추가 정보 처리에 실패했습니다. 다시 시도해주세요.");
-      console.error(err);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "추가 정보 처리에 실패했습니다. 다시 시도해주세요.");
+      console.error("Additional info error:", err);
     } finally {
       setIsLoading(false);
     }

@@ -10,20 +10,38 @@ import {
  * Upload image for asbestos analysis
  */
 export const analyzeImage = async (imageFile: File): Promise<AnalysisApiResponse> => {
+  console.log("=== analyzeImage 함수 호출 ===");
+  console.log("파일:", imageFile);
+
   const formData = new FormData();
   formData.append('image', imageFile);
 
-  const response = await client.post<ApiResponse<AnalysisApiResponse>>(
-    '/analysis/upload',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
+  console.log("FormData 생성 완료");
+  console.log("요청 URL:", '/analysis/upload');
 
-  return response.data.data;
+  try {
+    const response = await client.post<ApiResponse<AnalysisApiResponse>>(
+      '/analysis/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log("API 응답 성공:", response);
+    console.log("응답 데이터:", response.data);
+
+    return response.data.data;
+  } catch (error: any) {
+    console.error("=== analyzeImage API 에러 ===");
+    console.error("에러:", error);
+    console.error("에러 응답:", error.response);
+    console.error("에러 요청:", error.request);
+    console.error("에러 설정:", error.config);
+    throw error;
+  }
 };
 
 /**
