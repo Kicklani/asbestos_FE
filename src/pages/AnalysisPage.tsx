@@ -91,32 +91,47 @@ export const AnalysisPage: React.FC = () => {
       console.log("resultData 키들:", resultData ? Object.keys(resultData) : "null");
 
       // status가 객체인 경우 문자열로 변환
-      let statusValue = resultData.status || resultData.risk_level || "safe";
+      let statusValue = resultData.status ?? resultData.risk_level ?? "safe";
       if (typeof statusValue === 'object' && statusValue !== null) {
         // status가 객체인 경우, level이나 value 속성을 확인
-        statusValue = statusValue.level || statusValue.value || statusValue.status || "safe";
+        statusValue = statusValue.level ?? statusValue.value ?? statusValue.status ?? "safe";
       }
 
+      console.log("status 변환:", {
+        원본: resultData.status,
+        risk_level: resultData.risk_level,
+        변환결과: statusValue
+      });
+
       // API 응답을 AnalysisResult 형식으로 변환
+      // undefined/null 체크만 하고, 빈 배열이나 빈 문자열도 유효한 값으로 처리
       const result: AnalysisResult = {
-        id: resultData.id || resultData.analysis_id || String(Date.now()),
+        id: resultData.id ?? resultData.analysis_id ?? String(Date.now()),
         status: statusValue,
-        confidence: resultData.confidence || resultData.confidence_score || 85,
-        message: resultData.message || resultData.description || "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
-        detectedFeatures: resultData.detectedFeatures || resultData.detected_features || resultData.features || [
+        confidence: resultData.confidence ?? resultData.confidence_score ?? 85,
+        message: resultData.message ?? resultData.description ?? "제공된 이미지의 시각적 분석을 기반으로 AI 모델이 예비 스크리닝을 완료했습니다.",
+        detectedFeatures: resultData.detectedFeatures ?? resultData.detected_features ?? resultData.features ?? [
           "섬유질 질감 감지됨",
           "색상 패턴 분석 완료",
           "표면 특성 평가 완료",
         ],
-        recommendations: resultData.recommendations || resultData.suggested_actions || [
+        recommendations: resultData.recommendations ?? resultData.suggested_actions ?? [
           "상세 분석 보고서를 검토하세요",
           "우려되는 경우 전문 검사를 고려하세요",
           "이 스크리닝 기록을 보관하세요",
         ],
-        timestamp: resultData.timestamp || resultData.created_at || new Date().toISOString(),
+        timestamp: resultData.timestamp ?? resultData.created_at ?? new Date().toISOString(),
       };
 
-      console.log("변환된 결과:", result);
+      console.log("=== 필드별 변환 결과 ===");
+      console.log("id:", result.id);
+      console.log("status:", result.status);
+      console.log("confidence:", result.confidence);
+      console.log("message:", result.message);
+      console.log("detectedFeatures:", result.detectedFeatures);
+      console.log("recommendations:", result.recommendations);
+      console.log("timestamp:", result.timestamp);
+      console.log("변환된 결과 전체:", result);
 
       setAnalysisResult(result);
 
