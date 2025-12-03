@@ -107,12 +107,31 @@ export const getInspectionCenters = async (
     params.lng = longitude;
   }
 
-  const response = await client.get<ApiResponse<InspectionCentersApiResponse>>(
-    '/api/inspection-centers',
-    { params }
-  );
+  try {
+    const response = await client.get<ApiResponse<InspectionCentersApiResponse>>(
+      '/api/inspection-centers',
+      { params }
+    );
 
-  return response.data.data;
+    console.log("검사소 조회 응답:", response.data);
+
+    // 응답 구조에 따라 유연하게 처리
+    if (response.data.data) {
+      return response.data.data;
+    } else if (response.data) {
+      return response.data as any;
+    }
+
+    // 데이터가 없으면 빈 배열 반환
+    return { centers: [] };
+  } catch (error: any) {
+    console.warn("검사소 조회 실패:", error);
+    // 404 등의 에러 시 빈 배열 반환 (에러를 throw하지 않음)
+    if (error.response?.status === 404) {
+      console.warn("검사소 API가 아직 구현되지 않았습니다 (404)");
+    }
+    return { centers: [] };
+  }
 };
 
 /**

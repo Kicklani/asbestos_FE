@@ -12,7 +12,7 @@ import {
   AdditionalInfo,
   InspectionCenter,
 } from "@/types";
-import { analyzeImage, submitAdditionalInfo, getInspectionCenters, getAnalysisById } from "@/api/analysisApi";
+import { analyzeImage, submitAdditionalInfo, getAnalysisById } from "@/api/analysisApi";
 
 type Step = "upload" | "result" | "additional-info" | "inspection-centers";
 
@@ -113,8 +113,8 @@ export const AnalysisPage: React.FC = () => {
 
       setAnalysisResult(result);
 
-      // 분석 완료 후 검사소 목록도 미리 가져오기
-      await fetchInspectionCentersData();
+      // 검사소 목록은 하드코딩된 데이터 사용 (API 호출 안함)
+      setInspectionCentersWithMockData();
 
       setCurrentStep("result");
     } catch (err: any) {
@@ -151,103 +151,67 @@ export const AnalysisPage: React.FC = () => {
     }
   };
 
-  const fetchInspectionCentersData = async () => {
-    try {
-      // 실제 API 호출 (경상국립대학교 가좌캠퍼스 좌표: 35.1551, 128.0989)
-      const apiResponse = await getInspectionCenters(35.1551, 128.0989);
-
-      if (apiResponse.centers && apiResponse.centers.length > 0) {
-        setInspectionCenters(apiResponse.centers);
-      } else {
-        // API에서 데이터가 없으면 기본 검사소 사용
-        const mockCenters: InspectionCenter[] = [
-          {
-            id: "1",
-            name: "진주보건환경연구원",
-            address: "경남 진주시 동진로 169",
-            distance: 3.2,
-            estimatedCost: { min: 150000, max: 300000 },
-            inspectionTime: "3-5 영업일",
-            rating: 4.7,
-            phone: "055-749-5900",
-            certified: true,
-          },
-          {
-            id: "2",
-            name: "경남환경연구원",
-            address: "경남 진주시 칠암동 951-7",
-            distance: 4.5,
-            estimatedCost: { min: 180000, max: 350000 },
-            inspectionTime: "2-4 영업일",
-            rating: 4.8,
-            phone: "055-754-8801",
-            certified: true,
-          },
-          {
-            id: "3",
-            name: "한국환경공단 경남지사",
-            address: "경남 창원시 성산구 중앙대로 151",
-            distance: 28.5,
-            estimatedCost: { min: 200000, max: 400000 },
-            inspectionTime: "3-5 영업일",
-            rating: 4.6,
-            phone: "055-269-0500",
-            certified: true,
-          },
-          {
-            id: "4",
-            name: "㈜케이씨엘",
-            address: "경남 진주시 문산읍 삼곡리 333-1",
-            distance: 12.8,
-            estimatedCost: { min: 170000, max: 320000 },
-            inspectionTime: "2-3 영업일",
-            rating: 4.5,
-            phone: "055-761-5400",
-            certified: true,
-          },
-          {
-            id: "5",
-            name: "부산시보건환경연구원",
-            address: "부산광역시 북구 덕천동 363-14",
-            distance: 65.3,
-            estimatedCost: { min: 160000, max: 310000 },
-            inspectionTime: "4-6 영업일",
-            rating: 4.7,
-            phone: "051-309-2800",
-            certified: true,
-          },
-        ];
-        setInspectionCenters(mockCenters);
-      }
-    } catch (err) {
-      console.error("Failed to fetch inspection centers:", err);
-      // API 호출 실패 시 기본 검사소 사용
-      const mockCenters: InspectionCenter[] = [
-        {
-          id: "1",
-          name: "진주보건환경연구원",
-          address: "경남 진주시 동진로 169",
-          distance: 3.2,
-          estimatedCost: { min: 150000, max: 300000 },
-          inspectionTime: "3-5 영업일",
-          rating: 4.7,
-          phone: "055-749-5900",
-          certified: true,
-        },
-        {
-          id: "2",
-          name: "경남환경연구원",
-          address: "경남 진주시 칠암동 951-7",
-          distance: 4.5,
-          estimatedCost: { min: 180000, max: 350000 },
-          inspectionTime: "2-4 영업일",
-          rating: 4.8,
-          phone: "055-754-8801",
-          certified: true,
-        },
-      ];
-      setInspectionCenters(mockCenters);
-    }
+  const setInspectionCentersWithMockData = () => {
+    // 하드코딩된 검사소 데이터만 사용 (API 호출 안함)
+    console.log("검사소 목록 설정 (하드코딩된 데이터)");
+    const mockCenters: InspectionCenter[] = [
+      {
+        id: "1",
+        name: "진주보건환경연구원",
+        address: "경남 진주시 동진로 169",
+        distance: 3.2,
+        estimatedCost: { min: 150000, max: 300000 },
+        inspectionTime: "3-5 영업일",
+        rating: 4.7,
+        phone: "055-749-5900",
+        certified: true,
+      },
+      {
+        id: "2",
+        name: "경남환경연구원",
+        address: "경남 진주시 칠암동 951-7",
+        distance: 4.5,
+        estimatedCost: { min: 180000, max: 350000 },
+        inspectionTime: "2-4 영업일",
+        rating: 4.8,
+        phone: "055-754-8801",
+        certified: true,
+      },
+      {
+        id: "3",
+        name: "한국환경공단 경남지사",
+        address: "경남 창원시 성산구 중앙대로 151",
+        distance: 28.5,
+        estimatedCost: { min: 200000, max: 400000 },
+        inspectionTime: "3-5 영업일",
+        rating: 4.6,
+        phone: "055-269-0500",
+        certified: true,
+      },
+      {
+        id: "4",
+        name: "㈜케이씨엘",
+        address: "경남 진주시 문산읍 삼곡리 333-1",
+        distance: 12.8,
+        estimatedCost: { min: 170000, max: 320000 },
+        inspectionTime: "2-3 영업일",
+        rating: 4.5,
+        phone: "055-761-5400",
+        certified: true,
+      },
+      {
+        id: "5",
+        name: "부산시보건환경연구원",
+        address: "부산광역시 북구 덕천동 363-6",
+        distance: 65.3,
+        estimatedCost: { min: 150000, max: 280000 },
+        inspectionTime: "4-6 영업일",
+        rating: 4.9,
+        phone: "051-309-2800",
+        certified: true,
+      },
+    ];
+    setInspectionCenters(mockCenters);
   };
 
   const handleContinueFromResult = () => {
